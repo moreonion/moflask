@@ -7,7 +7,8 @@ from werkzeug.utils import import_string
 class BaseApp(Flask):
     @staticmethod
     def config_obj_from_env():
-        path = os.getenv('FLASK_CONFIG_OBJECT', 'settings.DevelopmentConfig')
+        env = os.getenv('FLASK_ENV', 'Development').capitalize()
+        path = os.getenv('FLASK_CONFIG_OBJECT', 'settings.' + env + 'Config')
         return import_string(path)()
 
     def __init__(self, *args, **kwargs):
