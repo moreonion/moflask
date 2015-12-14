@@ -20,7 +20,7 @@ class BaseApp(Flask):
         self.config.from_object(self.config_obj_from_env())
         self.config.from_object(config)
 
-        for handler in self.config['LOG_HANDLERS']:
+        for handler in self.config.get('LOG_HANDLERS', []):
             for logger in [self.logger]:
                 logger.addHandler(handler)
 
