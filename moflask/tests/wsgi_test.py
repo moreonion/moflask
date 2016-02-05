@@ -13,19 +13,25 @@ class ProxyFixTest(TestCase):
         app.config['PROXYFIX_TRUSTED'] = trusted
         return app
 
+    def _copy_env(self, env):
+        e = copy(env)
+        e['werkzeug.proxy_fix.orig_http_host'] = env['HTTP_HOST']
+        e['werkzeug.proxy_fix.orig_remote_addr'] = env['REMOTE_ADDR']
+        e['werkzeug.proxy_fix.orig_wsgi_url_scheme'] = env['wsgi.url_scheme']
+        return e
+
     def test_one_forwarded_for_layer(self):
         fix = ProxyFix(self.app_stub(['127.0.0.1']))
         env = {
             'REMOTE_ADDR': '127.0.0.1',
             'HTTP_HOST': 'example.com',
-            'wsgi.url_scheme': 'https',
+            'wsgi.url_scheme': 'http',
             'HTTP_X_FORWARDED_FOR': '8.8.8.8',
+            'HTTP_X_FORWARDED_PROTO': 'https',
         }
-        e = copy(env)
+        e = self._copy_env(env)
         e['REMOTE_ADDR'] = '8.8.8.8'
-        e['werkzeug.proxy_fix.orig_http_host'] = env['HTTP_HOST']
-        e['werkzeug.proxy_fix.orig_remote_addr'] = env['REMOTE_ADDR']
-        e['werkzeug.proxy_fix.orig_wsgi_url_scheme'] = env['wsgi.url_scheme']
+        e['wsgi.url_scheme'] = 'https'
         fix.update_environ(env)
         self.assertEqual(e, env)
 
@@ -46,15 +52,25 @@ class ProxyFixTest(TestCase):
         env = {
             'REMOTE_ADDR': '8.8.8.8',
             'HTTP_HOST': 'example.com',
-            'wsgi.url_scheme': 'https',
+            'wsgi.url_scheme': 'http',
             'HTTP_X_FORWARDED_FOR': '8.8.8.8',
             'HTTP_X_FORWARDED_HOST': 'untrusted.com',
-            'HTTP_X_FORWARDED_PROTO': 'http',
+            'HTTP_X_FORWARDED_PROTO': 'https',
         }
-        e = copy(env)
-        e['REMOTE_ADDR'] = '8.8.8.8'
-        e['werkzeug.proxy_fix.orig_http_host'] = env['HTTP_HOST']
-        e['werkzeug.proxy_fix.orig_remote_addr'] = env['REMOTE_ADDR']
-        e['werkzeug.proxy_fix.orig_wsgi_url_scheme'] = env['wsgi.url_scheme']
+        e = self._copy_env(env)
+        fix.update_environ(env)
+        self.assertEqual(e, env)
+
+    def test_new_ip_equals_old_ip(self):
+        fix = ProxyFix(self.app_stub(['127.0.0.1']))
+        env = {
+            'REMOTE_ADDR': '127.0.0.1',
+            'HTTP_HOST': 'example.com',
+            'wsgi.url_scheme': 'http',
+            'HTTP_X_FORWARDED_FOR': '127.0.0.1',
+            'HTTP_X_FORWARDED_PROTO': 'https',
+        }
+        e = self._copy_env(env)
+        e['wsgi.url_scheme'] = 'https'
         fix.update_environ(env)
         self.assertEqual(e, env)

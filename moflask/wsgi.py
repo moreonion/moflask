@@ -46,15 +46,17 @@ class ProxyFix(object):
             'werkzeug.proxy_fix.orig_remote_addr':     env('REMOTE_ADDR'),
             'werkzeug.proxy_fix.orig_http_host':       env('HTTP_HOST')
         })
-        remote_addr = self.get_remote_addr(forwarded_for, env('REMOTE_ADDR'))
-        if remote_addr is not None:
-            environ['REMOTE_ADDR'] = remote_addr
-        if remote_addr != env('REMOTE_ADDR'):
+
+        if ip_address(env('REMOTE_ADDR')) in self.trusted:
             if forwarded_host:
                 environ['HTTP_HOST'] = forwarded_host
             if forwarded_proto:
                 https = 'https' in forwarded_proto.lower()
                 environ['wsgi.url_scheme'] = 'https' if https else 'http'
+
+        remote_addr = self.get_remote_addr(forwarded_for, env('REMOTE_ADDR'))
+        if remote_addr is not None:
+            environ['REMOTE_ADDR'] = remote_addr
 
     def __call__(self, environ, start_response):
         self.update_environ(environ)
