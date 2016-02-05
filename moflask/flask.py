@@ -29,5 +29,12 @@ class BaseApp(Flask):
         if not self.sanity_check():
             raise RuntimeError('Sanity checks failed. Aborting!')
 
+        self.init_sentry()
+
+    def init_sentry(self):
+        if self.config.get('SENTRY_DSN', False):
+            from raven.contrib.flask import Sentry
+            self.sentry = Sentry(self)
+
     def sanity_check(self):
         return True
