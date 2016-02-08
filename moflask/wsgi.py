@@ -29,8 +29,9 @@ class ProxyFix(object):
         X-Forwarded-For. It picks the "rightmost" untrusted IP address.
         """
         for ip_str in reversed([remote] + forwarded_for):
+            ip_str = ip_str.strip()
             try:
-                if not ip_address(ip_str.strip()) in self.trusted:
+                if not ip_address(ip_str) in self.trusted:
                     return ip_str
             except ValueError:
                 return ip_str
