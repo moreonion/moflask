@@ -40,7 +40,8 @@ class ProxyFix(object):
     def update_environ(self, environ):
         env = environ.get
         forwarded_proto = env('HTTP_X_FORWARDED_PROTO', '')
-        forwarded_for = env('HTTP_X_FORWARDED_FOR', '').split(',')
+        # the str.split() API needs a little help to convert a '' into a []
+        forwarded_for = list(filter(None, env('HTTP_X_FORWARDED_FOR', '').split(',')))
         forwarded_host = env('HTTP_X_FORWARDED_HOST', '')
         environ.update({
             'werkzeug.proxy_fix.orig_wsgi_url_scheme': env('wsgi.url_scheme'),
