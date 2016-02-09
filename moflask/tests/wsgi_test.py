@@ -74,3 +74,14 @@ class ProxyFixTest(TestCase):
         e['wsgi.url_scheme'] = 'https'
         fix.update_environ(env)
         self.assertEqual(e, env)
+
+    def test_no_proxy_works_transparently(self):
+        fix = ProxyFix(self.app_stub(['127.0.0.1']))
+        env = {
+            'REMOTE_ADDR': '127.0.0.1',
+            'HTTP_HOST': 'example.com',
+            'wsgi.url_scheme': 'http'
+        }
+        e = self._copy_env(env)
+        fix.update_environ(env)
+        self.assertEqual(e, env)
