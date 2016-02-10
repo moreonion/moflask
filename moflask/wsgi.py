@@ -1,5 +1,7 @@
 from ipaddress import ip_address
 
+_split = lambda x: x.split(',') if x else []
+
 
 class ProxyFix(object):
     """This is a slightly modified version of werkzeug's ProxyFix.
@@ -40,7 +42,7 @@ class ProxyFix(object):
     def update_environ(self, environ):
         env = environ.get
         forwarded_proto = env('HTTP_X_FORWARDED_PROTO', '')
-        forwarded_for = env('HTTP_X_FORWARDED_FOR', '').split(',')
+        forwarded_for = _split(env('HTTP_X_FORWARDED_FOR', ''))
         forwarded_host = env('HTTP_X_FORWARDED_HOST', '')
         environ.update({
             'werkzeug.proxy_fix.orig_wsgi_url_scheme': env('wsgi.url_scheme'),
