@@ -44,6 +44,12 @@ class ProxyFix(object):
         remote_addr = env('REMOTE_ADDR')
         if not remote_addr:
             return
+
+        try:
+            remote_addr_ip = ip_address(remote_addr)
+        except ValueError:
+            remote_addr_ip = ip_address('127.0.0.1')
+
         forwarded_proto = env('HTTP_X_FORWARDED_PROTO', '')
         forwarded_for = _split(env('HTTP_X_FORWARDED_FOR', ''))
         forwarded_host = env('HTTP_X_FORWARDED_HOST', '')
@@ -53,7 +59,7 @@ class ProxyFix(object):
             'werkzeug.proxy_fix.orig_http_host':       env('HTTP_HOST')
         })
 
-        if ip_address(remote_addr) in self.trusted:
+        if remote_addr_ip in self.trusted:
             if forwarded_host:
                 environ['HTTP_HOST'] = forwarded_host
             if forwarded_proto:
