@@ -10,6 +10,12 @@ setup(
     author_email='torotil@gmail.com',
     packages=['moflask'],
     install_requires=['Flask'],
+    extras_require={
+        'test': [
+            'pytest',
+            'python-json-logger'
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

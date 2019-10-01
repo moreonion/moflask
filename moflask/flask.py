@@ -1,7 +1,10 @@
 import os
+import logging as _logging
 
 from flask import Flask
 from werkzeug.utils import import_string
+
+from moflask.logging import configure_logger
 
 
 class BaseApp(Flask):
@@ -22,9 +25,8 @@ class BaseApp(Flask):
         self.config.from_object(self.config_obj_from_env(env))
         self.config.from_object(config)
 
-        for handler in self.config.get('LOG_HANDLERS', []):
-            for logger in [self.logger]:
-                logger.addHandler(handler)
+        logger = _logging.getLogger('flask.app')
+        configure_logger(logger, self.config)
 
         if not self.sanity_check():
             raise RuntimeError('Sanity checks failed. Aborting!')
