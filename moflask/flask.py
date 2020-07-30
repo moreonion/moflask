@@ -32,9 +32,28 @@ class BaseApp(Flask):
         self.init_sentry()
 
     def init_sentry(self):
+        """Initialize Sentry
+
+        If there is an optin into the newer Sentry Python SDK
+        this will be used. The old "raven" library otherwise.
+
+        The boolean current_app.use_sentry_sdk signifies if the newer library
+        is to be used
+        """
+        self.use_sentry_sdk = True if 'sentry_sdk' == self.config.get(
+            'SENTRY_CLIENT', 'raven') else False
         if self.config.get('SENTRY_DSN', False):
-            from raven.contrib.flask import Sentry
-            self.sentry = Sentry(self)
+            if self.use_sentry_sdk:
+                import sentry_sdk
+                from sentry_sdk.integrations.flask import FlaskIntegration
+                sentry_sdk.init(
+                    dsn=self.config.get('SENTRY_DSN'),
+                    integrations=[FlaskIntegration()]
+                )
+                self.sentry = sentry_sdk
+            else:
+                from raven.contrib.flask import Sentry
+                self.sentry = Sentry(self)
 
     def sanity_check(self):
         return True
