@@ -17,21 +17,21 @@ from ..logging import (
 
 def test_configuring_default_logger():
     """Default formatter is OptionalExtraFormatter."""
-    app = Flask(__name__)
+    app = Flask("moflask")
 
     configure_logger(app.logger, {})
 
-    assert app.logger.name == "flask.app"
+    assert app.logger.name == "moflask"
     assert isinstance(app.logger.handlers[0].formatter, OptionalExtraFormatter)
 
 
 def test_configuring_with_json_logger():
     """Test configuring with JsonFormatter."""
-    app = Flask(__name__)
+    app = Flask("moflask")
 
     configure_logger(app.logger, {"LOG_JSON": True})
 
-    assert app.logger.name == "flask.app"
+    assert app.logger.name == "moflask"
     assert isinstance(app.logger.handlers[0].formatter, JsonFormatter)
 
 
