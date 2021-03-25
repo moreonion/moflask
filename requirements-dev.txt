@@ -23,6 +23,7 @@ chardet==3.0.4
 click==7.1.2
     # via
     #   black
+    #   flask
     #   pip-tools
     #   safety
 coverage==5.3
@@ -33,6 +34,8 @@ dparse==0.5.1
     # via safety
 filelock==3.0.12
     # via virtualenv
+flask==1.1.2
+    # via -r requirements-dev.in
 identify==1.5.5
     # via pre-commit
 idna==2.10
@@ -43,8 +46,14 @@ isort[pyproject]==5.6.1
     # via
     #   -r requirements-dev.in
     #   pylint
+itsdangerous==1.1.0
+    # via flask
+jinja2==2.11.3
+    # via flask
 lazy-object-proxy==1.4.3
     # via astroid
+markupsafe==1.1.1
+    # via jinja2
 mccabe==0.6.1
     # via pylint
 mypy-extensions==0.4.3
@@ -58,7 +67,9 @@ packaging==20.4
     #   safety
 pathspec==0.8.0
     # via black
-pip-tools==5.3.1
+pep517==0.10.0
+    # via pip-tools
+pip-tools==6.0.1
     # via -r requirements-dev.in
 pluggy==0.13.1
     # via pytest
@@ -80,6 +91,8 @@ pytest==6.1.1
     # via
     #   -r requirements-dev.in
     #   pytest-cov
+python-json-logger==2.0.1
+    # via -r requirements-dev.in
 pyyaml==5.3.1
     # via
     #   dparse
@@ -94,7 +107,6 @@ six==1.15.0
     # via
     #   astroid
     #   packaging
-    #   pip-tools
     #   virtualenv
 snowballstemmer==2.0.0
     # via pydocstyle
@@ -102,6 +114,7 @@ toml==0.10.1
     # via
     #   black
     #   dparse
+    #   pep517
     #   pre-commit
     #   pylint
     #   pytest
@@ -113,6 +126,8 @@ urllib3==1.25.10
     # via requests
 virtualenv==20.0.33
     # via pre-commit
+werkzeug==1.0.1
+    # via flask
 wrapt==1.12.1
     # via astroid
 

@@ -1,4 +1,8 @@
 -r requirements.in
+flask
+python-json-logger
+
+# tooling
 black
 isort[pyproject]
 pip-tools
