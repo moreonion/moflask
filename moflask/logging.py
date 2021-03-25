@@ -23,7 +23,6 @@ import logging
 from flask import current_app, has_app_context, has_request_context, request
 from flask.logging import default_handler
 
-
 # Ensure the `current_user` variable is set for the filter below.
 try:
     from flask_security import current_user
@@ -42,20 +41,23 @@ def configure_logger(logger, config):
 
     If `LOG_HANDLERS` is not configured, the Flask `default_handler` is used.
     """
-    if config.get('LOG_JSON', False):
+    if config.get("LOG_JSON", False):
         from pythonjsonlogger import jsonlogger
+
         # extra fields are taken care of by the JsonFormatter
-        formatter = jsonlogger.JsonFormatter((
-            '(message) (levelname) (name) (asctime) (created) '
-            '(process) (processName) (thread) (threadName) '
-            '(lineno) (module) (pathname)'))
+        formatter = jsonlogger.JsonFormatter(
+            (
+                "(message) (levelname) (name) (asctime) (created) "
+                "(process) (processName) (thread) (threadName) "
+                "(lineno) (module) (pathname)"
+            )
+        )
     else:
-        formatter = OptionalExtraFormatter(
-            '%(asctime)s [%(levelname)s] %(name)s: %(message)s')
+        formatter = OptionalExtraFormatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
-    logger.setLevel(config.get('LOG_LEVEL', logging.INFO))
+    logger.setLevel(config.get("LOG_LEVEL", logging.INFO))
 
-    for handler in config.get('LOG_HANDLERS', [default_handler]):
+    for handler in config.get("LOG_HANDLERS", [default_handler]):
         logger.addHandler(handler)
 
     # configure registered handlers
@@ -69,7 +71,7 @@ def configure_logger(logger, config):
     logger.addFilter(RequestResponseContextFilter())
 
 
-class RequestContext():
+class RequestContext:
     """
     Return information about the current request if available.
 
@@ -80,11 +82,11 @@ class RequestContext():
     def __call__(self):
         """Get request context information."""
         if has_request_context():
-            return {'request_remote_addr': request.remote_addr}
+            return {"request_remote_addr": request.remote_addr}
         return {}
 
 
-class AppContext():
+class AppContext:
     """
     Return information about the app if available.
 
@@ -95,11 +97,11 @@ class AppContext():
     def __call__(self):
         """Get app context information."""
         if has_app_context():
-            return {'app': current_app.name}
+            return {"app": current_app.name}
         return {}
 
 
-class UserContext():
+class UserContext:
     """
     Return information about the logged in user if available.
 
@@ -111,8 +113,8 @@ class UserContext():
         """Get user context information."""
         if current_user:
             if current_user.is_authenticated:
-                return {'user': repr(current_user)}
-            return {'user': '<AnonymousUser>'}
+                return {"user": repr(current_user)}
+            return {"user": "<AnonymousUser>"}
         return {}
 
 
@@ -157,16 +159,15 @@ class RequestResponseContextFilter(logging.Filter):
 
     def filter(self, record):
         """Add custom attributes as specified by the context objects."""
-        if hasattr(record, '_response'):
-            resp = getattr(record, '_response', None)
-            record.response_status_code = getattr(
-                resp, 'status_code', '<attr not found>')
-            record.response_text = getattr(resp, 'text', '<attr not found>')
+        if hasattr(record, "_response"):
+            resp = getattr(record, "_response", None)
+            record.response_status_code = getattr(resp, "status_code", "<attr not found>")
+            record.response_text = getattr(resp, "text", "<attr not found>")
 
-        if hasattr(record, '_request'):
-            req = getattr(record, '_request', None)
-            record.request_url = getattr(req, 'url', '<attr not found>')
-            record.request_method = getattr(req, 'method', '<attr not found>')
+        if hasattr(record, "_request"):
+            req = getattr(record, "_request", None)
+            record.request_url = getattr(req, "url", "<attr not found>")
+            record.request_method = getattr(req, "method", "<attr not found>")
 
         return True
 
@@ -189,7 +190,7 @@ class OptionalExtraFormatter(logging.Formatter):
     by default.
     """
 
-    def __init__(self, fmt=None, datefmt=None, extrafmt='%(message)s %(extra)s'):
+    def __init__(self, fmt=None, datefmt=None, extrafmt="%(message)s %(extra)s"):
         """Create formatter."""
         super().__init__(fmt, datefmt)
         self._extrafmt = extrafmt
@@ -197,9 +198,9 @@ class OptionalExtraFormatter(logging.Formatter):
     def format(self, record):
         """Format a record."""
         # pylint: disable=protected-access
-        if hasattr(record, '_extra') and record._extra:
+        if hasattr(record, "_extra") and record._extra:
             msg = logging.Formatter.format(self, record)
-            msg = self._extrafmt % {'message': msg, 'extra': record._extra}
+            msg = self._extrafmt % {"message": msg, "extra": record._extra}
         else:
             msg = logging.Formatter.format(self, record)
 

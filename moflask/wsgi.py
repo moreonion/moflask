@@ -1,6 +1,6 @@
 from ipaddress import ip_address
 
-_split = lambda x: x.split(',') if x else []
+_split = lambda x: x.split(",") if x else []
 
 
 class ProxyFix(object):
@@ -23,7 +23,7 @@ class ProxyFix(object):
 
     def __init__(self, app):
         self.wsgi = app.wsgi_app
-        proxies = app.config.get('PROXYFIX_TRUSTED', ['127.0.0.1'])
+        proxies = app.config.get("PROXYFIX_TRUSTED", ["127.0.0.1"])
         self.trusted = frozenset(ip_address(p.strip()) for p in proxies)
 
     def get_remote_addr(self, forwarded_for, remote):
@@ -41,34 +41,36 @@ class ProxyFix(object):
 
     def update_environ(self, environ):
         env = environ.get
-        remote_addr = env('REMOTE_ADDR')
+        remote_addr = env("REMOTE_ADDR")
         if not remote_addr:
             return
 
         try:
             remote_addr_ip = ip_address(remote_addr)
         except ValueError:
-            remote_addr_ip = ip_address('127.0.0.1')
+            remote_addr_ip = ip_address("127.0.0.1")
 
-        forwarded_proto = env('HTTP_X_FORWARDED_PROTO', '')
-        forwarded_for = _split(env('HTTP_X_FORWARDED_FOR', ''))
-        forwarded_host = env('HTTP_X_FORWARDED_HOST', '')
-        environ.update({
-            'werkzeug.proxy_fix.orig_wsgi_url_scheme': env('wsgi.url_scheme'),
-            'werkzeug.proxy_fix.orig_remote_addr':     env('REMOTE_ADDR'),
-            'werkzeug.proxy_fix.orig_http_host':       env('HTTP_HOST')
-        })
+        forwarded_proto = env("HTTP_X_FORWARDED_PROTO", "")
+        forwarded_for = _split(env("HTTP_X_FORWARDED_FOR", ""))
+        forwarded_host = env("HTTP_X_FORWARDED_HOST", "")
+        environ.update(
+            {
+                "werkzeug.proxy_fix.orig_wsgi_url_scheme": env("wsgi.url_scheme"),
+                "werkzeug.proxy_fix.orig_remote_addr": env("REMOTE_ADDR"),
+                "werkzeug.proxy_fix.orig_http_host": env("HTTP_HOST"),
+            }
+        )
 
         if remote_addr_ip in self.trusted:
             if forwarded_host:
-                environ['HTTP_HOST'] = forwarded_host
+                environ["HTTP_HOST"] = forwarded_host
             if forwarded_proto:
-                https = 'https' in forwarded_proto.lower()
-                environ['wsgi.url_scheme'] = 'https' if https else 'http'
+                https = "https" in forwarded_proto.lower()
+                environ["wsgi.url_scheme"] = "https" if https else "http"
 
         remote_addr = self.get_remote_addr(forwarded_for, remote_addr)
         if remote_addr is not None:
-            environ['REMOTE_ADDR'] = remote_addr
+            environ["REMOTE_ADDR"] = remote_addr
 
     def __call__(self, environ, start_response):
         self.update_environ(environ)
