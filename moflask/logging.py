@@ -69,32 +69,6 @@ def configure_logger(logger, config):
     logger.addFilter(RequestResponseContextFilter())
 
 
-def log(level, info, logger=None):
-    """Log via a dict object.
-
-    Convenience wrapper around logging. You can safely pass a dict with a key
-    named `message` and this function will use it as log message.
-
-    The logger used defaults to `flask.logger`, the default flask logger name.
-
-    The key `message` is used as log message.
-    The rest will be used as `extra` param.
-    """
-    # copy info so that we can safely delete keys
-    extra = info.copy()
-    if logger is None:
-        logger = logging.getLogger('flask.app')
-    try:
-        message = extra.get('message', '')
-        del extra['message']
-    except KeyError:
-        pass
-
-    # log to level `level`
-    lvl = logging.getLevelName(level.upper())
-    logger.log(lvl, message, extra=extra)
-
-
 class RequestContext():
     """
     Return information about the current request if available.
