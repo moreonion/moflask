@@ -47,9 +47,9 @@ def configure_logger(logger, config):
         # extra fields are taken care of by the JsonFormatter
         formatter = jsonlogger.JsonFormatter(
             (
-                "(message) (levelname) (name) (asctime) (created) "
-                "(process) (processName) (thread) (threadName) "
-                "(lineno) (module) (pathname)"
+                "%(message) %(levelname) %(name) %(asctime) %(created) "
+                "%(process) %(processName) %(thread) %(threadName) "
+                "%(lineno) %(module) %(pathname)"
             )
         )
     else:
