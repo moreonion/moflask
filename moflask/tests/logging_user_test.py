@@ -10,6 +10,7 @@ import sys
 from unittest.mock import MagicMock
 
 from flask import Flask
+from flask_login import LoginManager
 
 
 def test_user_context_filter():
@@ -21,12 +22,11 @@ def test_user_context_filter():
     """
     app = Flask(__name__)
 
-    # mock flask_security.current_user
-    # this needs to ne set up *before* `..logging` module is imported
-    mock = MagicMock()
-    mock.current_user = MagicMock()
-    mock.current_user.is_authenticated = False
-    sys.modules["flask_security"] = mock
+    # Provide a minimal setup for `current_user` to work
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.user_loader(lambda user_id: None)
+
     from ..logging import ContextFilter, UserContext
 
     context_filter = ContextFilter(UserContext())

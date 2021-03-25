@@ -1,5 +1,6 @@
 -r requirements.in
 flask
+flask-login
 python-json-logger
 
 # tooling

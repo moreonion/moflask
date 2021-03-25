@@ -25,7 +25,7 @@ from flask.logging import default_handler
 
 # Ensure the `current_user` variable is set for the filter below.
 try:
-    from flask_security import current_user
+    from flask_login import current_user
 except ImportError:
     current_user = None
 
