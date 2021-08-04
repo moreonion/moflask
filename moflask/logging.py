@@ -32,7 +32,7 @@ except ImportError:
 
 def configure_logger(logger, config):
     """Configure a logger object with custom filters and handlers."""
-    logger.addHandler(get_default_handler())
+    logger.addHandler(get_default_handler(config))
 
     # Add a file handler too if configured.
     file_handler = get_json_file_handler(config)
@@ -101,14 +101,16 @@ def add_response_data(record):
     return True
 
 
-def get_formatter():
+def get_formatter(config):
     """Get a string formatter."""
-    return logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    fmt = config.get("LOG_FORMAT", "%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    datefmt = config.get("LOG_DATE_FORMAT", None)
+    return logging.Formatter(fmt, datefmt)
 
 
-def get_json_formatter():
+def get_json_formatter(config):
     """Get a JSON formatter."""
-    include = [
+    default_include = [
         "message",
         "levelname",
         "name",
@@ -122,20 +124,21 @@ def get_json_formatter():
         "module",
         "pathname",
     ]
+    include = config.get("LOG_FILE_INCLUDE", default_include)
     # Fields form the `extra` dict are automatically added by the JsonFormatter.
     return jsonlogger.JsonFormatter(" ".join(f"%({prop})" for prop in include))
 
 
-def get_default_handler(filters=None, formatter=None):
+def get_default_handler(config, filters=None):
     """Get a default stream handler with custom formatting."""
     handler = logging.StreamHandler()
-    handler.setFormatter(formatter or get_formatter())
+    handler.setFormatter(get_formatter(config))
     for filter_ in filters or []:
         handler.addFilter(filter_)
     return handler
 
 
-def get_json_file_handler(config, filters=None, formatter=None):
+def get_json_file_handler(config, filters=None):
     """Get a file handler with custom JSON formatting and context data."""
     log_file = config.get("LOG_FILE", None)
     if log_file is None:
@@ -145,7 +148,7 @@ def get_json_file_handler(config, filters=None, formatter=None):
         maxBytes=config.get("LOG_FILE_MAX_SIZE", 0),
         backupCount=config.get("LOG_FILE_COUNT", 0),
     )
-    handler.setFormatter(formatter or get_json_formatter())
+    handler.setFormatter(get_json_formatter(config))
     default_filters = [
         add_app_context_data,
         add_request_context_data,
