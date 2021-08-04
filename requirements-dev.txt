@@ -46,7 +46,7 @@ idna==2.10
     # via requests
 iniconfig==1.0.1
     # via pytest
-isort[pyproject]==5.6.1
+isort==5.6.1
     # via
     #   -r requirements-dev.in
     #   pylint

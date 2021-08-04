@@ -5,7 +5,7 @@ python-json-logger
 
 # tooling
 black
-isort[pyproject]
+isort
 pip-tools
 pre-commit
 pycodestyle
