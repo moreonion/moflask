@@ -81,5 +81,20 @@ def test_response_filter():
     logging.add_response_data(record)
     assert record.response_status_code
     assert record.response_status_code == 200
-    assert record.response_text
-    assert record.response_text == "Hello"
+    assert record.response_body
+    assert record.response_body == "Hello"
+
+
+def test_response_filter_with_json():
+    """Test the added response body is JSON if the response was JSON."""
+    response = requests.Response()
+    response.status_code = 200
+    # pylint: disable=protected-access
+    response._content = '{"test": 1}'.encode("utf-8")
+    record = _logging.makeLogRecord({"_response": response})
+    logging.add_response_data(record)
+    assert record.response_status_code
+    assert record.response_status_code == 200
+    assert record.response_body
+    assert "test" in record.response_body
+    assert record.response_body["test"] == 1

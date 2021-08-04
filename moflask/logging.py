@@ -16,6 +16,7 @@ attribute.
 Currently the same formatter will be used for all configured handlers.
 """
 
+import json
 import logging
 import logging.handlers
 
@@ -93,7 +94,10 @@ def add_response_data(record):
     response = getattr(record, "_response", None)
     if response:
         record.response_status_code = response.status_code
-        record.response_text = response.text
+        try:
+            record.response_body = response.json()
+        except json.decoder.JSONDecodeError:
+            record.response_body = response.text
     return True
 
 
