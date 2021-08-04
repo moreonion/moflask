@@ -42,12 +42,6 @@ def configure_logger(logger, config):
 
     logger.setLevel(config.get("LOG_LEVEL", logging.INFO))
 
-    # Add any relevant filters to the logger.
-    logger.addFilter(ContextFilter(AppContext(), RequestContext()))
-    if current_user:
-        logger.addFilter(ContextFilter(UserContext()))
-    logger.addFilter(RequestResponseContextFilter())
-
 
 class RequestContext:
     """
@@ -194,6 +188,12 @@ def get_json_file_handler(config, filters=None, formatter=None):
         backupCount=config.get("LOG_FILE_COUNT", 0),
     )
     handler.setFormatter(formatter or get_json_formatter())
-    for filter_ in filters or []:
+    default_filters = [
+        ContextFilter(AppContext(), RequestContext()),
+        RequestResponseContextFilter(),
+    ]
+    if current_user:
+        default_filters.append(ContextFilter(UserContext()))
+    for filter_ in default_filters + (filters or []):
         handler.addFilter(filter_)
     return handler
