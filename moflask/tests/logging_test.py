@@ -14,7 +14,7 @@ def test_configuring_default_logger():
     """Test Default formatter is used."""
     app = Flask("moflask")
 
-    logging.configure_logger(app.logger, {})
+    logging.init_logger(app)
 
     assert app.logger.name == "moflask"
     assert isinstance(app.logger.handlers[-1].formatter, _logging.Formatter)
@@ -23,8 +23,9 @@ def test_configuring_default_logger():
 def test_configuring_file_logger():
     """Test JsonFormatter is used for log file."""
     app = Flask("moflask")
+    app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
 
-    logging.configure_logger(app.logger, {"LOG_FILE": "/tmp/moflask.logging_test.log"})
+    logging.init_logger(app)
 
     assert app.logger.name == "moflask"
     assert isinstance(app.logger.handlers[-1].formatter, JsonFormatter)
