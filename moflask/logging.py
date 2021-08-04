@@ -16,12 +16,10 @@ attribute.
 Currently the same formatter will be used for all configured handlers.
 """
 
-# pylint: disable=too-few-public-methods
-
 import logging
 import logging.handlers
 
-from flask import current_app, has_app_context, has_request_context, request
+import flask
 from pythonjsonlogger import jsonlogger
 
 # Ensure the `current_user` variable is set for the filter below.
@@ -43,104 +41,60 @@ def configure_logger(logger, config):
     logger.setLevel(config.get("LOG_LEVEL", logging.INFO))
 
 
-class RequestContext:
+def add_request_context_data(record):
+    """Add request data from the context to the log record if available."""
+    if flask.has_request_context():
+        record.request_remote_addr = flask.request.remote_addr
+    return True
+
+
+def add_app_context_data(record):
+    """Add app data from the context to the log record if available."""
+    if flask.has_app_context():
+        record.app = flask.current_app.name
+    return True
+
+
+def add_user_data(record):
+    """Add user data to the log record if available."""
+    if current_user:
+        if current_user.is_authenticated:
+            record.user = repr(current_user)
+        else:
+            record.user = "<AnonymousUser>"
+    return True
+
+
+def add_request_data(record):
+    """Add contextual information about a request to the log record.
+
+    The filter looks for the attribute `_request` in the `record`,
+    tries to retrieve specific information and sets or updates attributes
+    on the log record. The request is expected to be of type `requests.Request`.
+
+    `_request` can be added by log calls in the `extra` dict.
     """
-    Return information about the current request if available.
+    request = getattr(record, "_request", None)
+    if request:
+        record.request_url = request.url
+        record.request_method = request.method
+    return True
 
-    This information can be used to enrich log calls by merging this information
-    into the `extra` dict.
+
+def add_response_data(record):
+    """Add contextual information about a response to the log record.
+
+    The filter looks for the attribute `_response` in the `record`,
+    tries to retrieve specific information and sets or updates attributes
+    on the log record. The response is expected to be of type `requests.Response`.
+
+    `_response` can be added by log calls in the `extra` dict.
     """
-
-    def __call__(self):
-        """Get request context information."""
-        if has_request_context():
-            return {"request_remote_addr": request.remote_addr}
-        return {}
-
-
-class AppContext:
-    """
-    Return information about the app if available.
-
-    This information can be used to enrich log calls by merging this information
-    into the `extra` dict.
-    """
-
-    def __call__(self):
-        """Get app context information."""
-        if has_app_context():
-            return {"app": current_app.name}
-        return {}
-
-
-class UserContext:
-    """
-    Return information about the logged in user if available.
-
-    This information can be used to enrich log calls by merging this information
-    into the `extra` dict.
-    """
-
-    def __call__(self):
-        """Get user context information."""
-        if current_user:
-            if current_user.is_authenticated:
-                return {"user": repr(current_user)}
-            return {"user": "<AnonymousUser>"}
-        return {}
-
-
-class ContextFilter(logging.Filter):
-    """Set contextual information about the app, request and user."""
-
-    def __init__(self, *args):
-        """Create a new filter by passing the context callables."""
-        super().__init__()
-        self.contexts = args
-
-    def filter(self, record):
-        """Add custom attributes as specified by the context objects."""
-        data = {}
-        for callback in self.contexts:
-            data.update(callback())
-
-        for key, value in data.items():
-            setattr(record, key, value)
-
-        return True
-
-
-class RequestResponseContextFilter(logging.Filter):
-    """
-    Set contextual information about a response or request in the logrecord.
-
-    The filter looks for the attribute `_response` or `_request` in the `record`,
-    tries to retrieve whitelisted information and sets or updates attribures on
-    the logrecord.
-
-    * `_response.status_code` --> `response_status_code`
-    * `_response.text` --> `response_text`
-    * `_request.url` --> `request_url`
-    * `_request.method` --> `request_method`
-
-    If an attribute is not set the value `<attr not found>` get's logged.
-
-    `_response`/`_request` can be added by log calls in the `extra` dict.
-    """
-
-    def filter(self, record):
-        """Add custom attributes as specified by the context objects."""
-        if hasattr(record, "_response"):
-            resp = getattr(record, "_response", None)
-            record.response_status_code = getattr(resp, "status_code", "<attr not found>")
-            record.response_text = getattr(resp, "text", "<attr not found>")
-
-        if hasattr(record, "_request"):
-            req = getattr(record, "_request", None)
-            record.request_url = getattr(req, "url", "<attr not found>")
-            record.request_method = getattr(req, "method", "<attr not found>")
-
-        return True
+    response = getattr(record, "_response", None)
+    if response:
+        record.response_status_code = response.status_code
+        record.response_text = response.text
+    return True
 
 
 def get_formatter():
@@ -189,11 +143,13 @@ def get_json_file_handler(config, filters=None, formatter=None):
     )
     handler.setFormatter(formatter or get_json_formatter())
     default_filters = [
-        ContextFilter(AppContext(), RequestContext()),
-        RequestResponseContextFilter(),
+        add_app_context_data,
+        add_request_context_data,
+        add_request_data,
+        add_response_data,
     ]
     if current_user:
-        default_filters.append(ContextFilter(UserContext()))
+        default_filters.append(add_user_data)
     for filter_ in default_filters + (filters or []):
         handler.addFilter(filter_)
     return handler

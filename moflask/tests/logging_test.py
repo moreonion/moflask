@@ -1,29 +1,30 @@
 """Tests for logging."""
 # pylint: disable=no-member,protected-access
 
-import logging
+import logging as _logging
 
+import requests
 from flask import Flask
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
-from ..logging import AppContext, ContextFilter, RequestContext, configure_logger
+from moflask import logging
 
 
 def test_configuring_default_logger():
     """Test Default formatter is used."""
     app = Flask("moflask")
 
-    configure_logger(app.logger, {})
+    logging.configure_logger(app.logger, {})
 
     assert app.logger.name == "moflask"
-    assert isinstance(app.logger.handlers[-1].formatter, logging.Formatter)
+    assert isinstance(app.logger.handlers[-1].formatter, _logging.Formatter)
 
 
 def test_configuring_file_logger():
     """Test JsonFormatter is used for log file."""
     app = Flask("moflask")
 
-    configure_logger(app.logger, {"LOG_FILE": "/tmp/moflask.logging_test.log"})
+    logging.configure_logger(app.logger, {"LOG_FILE": "/tmp/moflask.logging_test.log"})
 
     assert app.logger.name == "moflask"
     assert isinstance(app.logger.handlers[-1].formatter, JsonFormatter)
@@ -31,30 +32,54 @@ def test_configuring_file_logger():
 
 
 def test_app_context_filter():
-    """Test AppContext enriches the LogRecord.
+    """Test app context enriches the LogRecord.
 
     Pulls information from a Flask `currrent_app` context.
     """
     app = Flask("app_context")
 
-    context_filter = ContextFilter(AppContext())
-    record = logging.makeLogRecord({})
+    context_filter = logging.add_app_context_data
+    record = _logging.makeLogRecord({})
     with app.app_context():
-        context_filter.filter(record)
+        context_filter(record)
     assert record.app
     assert record.app == "app_context"
 
 
 def test_request_context_filter():
-    """Test RequestContext enriches the LogRecord.
+    """Test request context enriches the LogRecord.
 
     Pulls information from a Flask `request` context.
     """
     app = Flask(__name__)
 
-    context_filter = ContextFilter(RequestContext())
-    record = logging.makeLogRecord({})
+    context_filter = logging.add_request_context_data
+    record = _logging.makeLogRecord({})
     with app.test_request_context("/", environ_base={"REMOTE_ADDR": "127.1.2.3"}):
-        context_filter.filter(record)
+        context_filter(record)
     assert record.request_remote_addr
     assert record.request_remote_addr == "127.1.2.3"
+
+
+def test_request_filter():
+    """Test _request in extra enriches the LogRecord."""
+    record = _logging.makeLogRecord({"_request": requests.Request("POST", "https://mo.flask")})
+    logging.add_request_data(record)
+    assert record.request_method
+    assert record.request_method == "POST"
+    assert record.request_url
+    assert record.request_url == "https://mo.flask"
+
+
+def test_response_filter():
+    """Test _response in extra enriches the LogRecord."""
+    response = requests.Response()
+    response.status_code = 200
+    # pylint: disable=protected-access
+    response._content = "Hello".encode("utf-8")
+    record = _logging.makeLogRecord({"_response": response})
+    logging.add_response_data(record)
+    assert record.response_status_code
+    assert record.response_status_code == 200
+    assert record.response_text
+    assert record.response_text == "Hello"

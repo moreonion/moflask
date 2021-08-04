@@ -5,12 +5,12 @@ file.
 """
 # pylint: disable=no-member,protected-access
 
-import logging
+import logging as _logging
 
 from flask import Flask
 from flask_login import LoginManager
 
-from ..logging import ContextFilter, UserContext
+from moflask import logging
 
 
 def test_user_context_filter():
@@ -25,9 +25,9 @@ def test_user_context_filter():
     login_manager.init_app(app)
     login_manager.user_loader(lambda user_id: None)
 
-    context_filter = ContextFilter(UserContext())
-    record = logging.makeLogRecord({})
+    context_filter = logging.add_user_data
+    record = _logging.makeLogRecord({})
     with app.test_request_context("/"):
-        context_filter.filter(record)
+        context_filter(record)
     assert record.user
     assert record.user == "<AnonymousUser>"
