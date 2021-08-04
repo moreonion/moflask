@@ -6,41 +6,34 @@ import logging
 from flask import Flask
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
-from ..logging import (
-    AppContext,
-    ContextFilter,
-    OptionalExtraFormatter,
-    RequestContext,
-    configure_logger,
-)
+from ..logging import AppContext, ContextFilter, RequestContext, configure_logger
 
 
 def test_configuring_default_logger():
-    """Default formatter is OptionalExtraFormatter."""
+    """Test Default formatter is used."""
     app = Flask("moflask")
 
     configure_logger(app.logger, {})
 
     assert app.logger.name == "moflask"
-    assert isinstance(app.logger.handlers[0].formatter, OptionalExtraFormatter)
+    assert isinstance(app.logger.handlers[-1].formatter, logging.Formatter)
 
 
-def test_configuring_with_json_logger():
-    """Test configuring with JsonFormatter."""
+def test_configuring_file_logger():
+    """Test JsonFormatter is used for log file."""
     app = Flask("moflask")
 
-    configure_logger(app.logger, {"LOG_JSON": True})
+    configure_logger(app.logger, {"LOG_FILE": "/tmp/moflask.logging_test.log"})
 
     assert app.logger.name == "moflask"
-    assert isinstance(app.logger.handlers[0].formatter, JsonFormatter)
+    assert isinstance(app.logger.handlers[-1].formatter, JsonFormatter)
+    assert app.logger.handlers[-1].baseFilename == "/tmp/moflask.logging_test.log"
 
 
 def test_app_context_filter():
-    """AppContext enriches the LogRecord.
+    """Test AppContext enriches the LogRecord.
 
     Pulls information from a Flask `currrent_app` context.
-
-    The information is available at the LogRecord and the `_extra` attribute.
     """
     app = Flask("app_context")
 
@@ -50,16 +43,12 @@ def test_app_context_filter():
         context_filter.filter(record)
     assert record.app
     assert record.app == "app_context"
-    assert "app" in record._extra
-    assert record._extra["app"] == "app_context"
 
 
 def test_request_context_filter():
-    """RequestContext enriches the LogRecord.
+    """Test RequestContext enriches the LogRecord.
 
     Pulls information from a Flask `request` context.
-
-    The information is available at the LogRecord and the `_extra` attribute.
     """
     app = Flask(__name__)
 
@@ -69,5 +58,3 @@ def test_request_context_filter():
         context_filter.filter(record)
     assert record.request_remote_addr
     assert record.request_remote_addr == "127.1.2.3"
-    assert "request_remote_addr" in record._extra
-    assert record._extra["request_remote_addr"] == "127.1.2.3"

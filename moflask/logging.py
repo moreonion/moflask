@@ -19,9 +19,10 @@ Currently the same formatter will be used for all configured handlers.
 # pylint: disable=too-few-public-methods
 
 import logging
+import logging.handlers
 
 from flask import current_app, has_app_context, has_request_context, request
-from flask.logging import default_handler
+from pythonjsonlogger import jsonlogger
 
 # Ensure the `current_user` variable is set for the filter below.
 try:
@@ -31,40 +32,17 @@ except ImportError:
 
 
 def configure_logger(logger, config):
-    """Configure a logger object with custom filters and handlers.
+    """Configure a logger object with custom filters and handlers."""
+    logger.addHandler(get_default_handler())
 
-    If `LOG_JSON=True` then the logs are formatted using a JSON formatter.
-
-    Otherwise a custom formatter, which also prints (any not-consumed)
-    `_extra` fields is used. These fields get populated by the filters from
-    this module.
-
-    If `LOG_HANDLERS` is not configured, the Flask `default_handler` is used.
-    """
-    if config.get("LOG_JSON", False):
-        from pythonjsonlogger import jsonlogger
-
-        # extra fields are taken care of by the JsonFormatter
-        formatter = jsonlogger.JsonFormatter(
-            (
-                "%(message) %(levelname) %(name) %(asctime) %(created) "
-                "%(process) %(processName) %(thread) %(threadName) "
-                "%(lineno) %(module) %(pathname)"
-            )
-        )
-    else:
-        formatter = OptionalExtraFormatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    # Add a file handler too if configured.
+    file_handler = get_json_file_handler(config)
+    if file_handler:
+        logger.addHandler(file_handler)
 
     logger.setLevel(config.get("LOG_LEVEL", logging.INFO))
 
-    for handler in config.get("LOG_HANDLERS", [default_handler]):
-        logger.addHandler(handler)
-
-    # configure registered handlers
-    for handler in logger.handlers:
-        handler.setFormatter(formatter)
-
-    # add any relevant filters to the logger
+    # Add any relevant filters to the logger.
     logger.addFilter(ContextFilter(AppContext(), RequestContext()))
     if current_user:
         logger.addFilter(ContextFilter(UserContext()))
@@ -135,7 +113,6 @@ class ContextFilter(logging.Filter):
         for key, value in data.items():
             setattr(record, key, value)
 
-        record._extra = data  # pylint: disable=protected-access
         return True
 
 
@@ -172,36 +149,51 @@ class RequestResponseContextFilter(logging.Filter):
         return True
 
 
-class OptionalExtraFormatter(logging.Formatter):
-    """
-    Formatter which outputs structured extra information to a log msg string.
+def get_formatter():
+    """Get a string formatter."""
+    return logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
-    It allows you to savely try to output a `extra` template variable as this
-    Formatter only tries to use it when the information is available in the
-    log record.
 
-    The information in the `extra` attribute get's serialized as `str()`. You can
-    change this with the `extrafmt` argument.
+def get_json_formatter():
+    """Get a JSON formatter."""
+    include = [
+        "message",
+        "levelname",
+        "name",
+        "asctime",
+        "created",
+        "process",
+        "processName",
+        "thread",
+        "threadName",
+        "lineno",
+        "module",
+        "pathname",
+    ]
+    # Fields form the `extra` dict are automatically added by the JsonFormatter.
+    return jsonlogger.JsonFormatter(" ".join(f"%({prop})" for prop in include))
 
-    You can combine this with e.g. a LoggingAdapter which ensures an `_extra`
-    attribute on the logrecord. Otherwise the default logging modules behaviour
-    would be to copy the `extra`s fields onto the logrecord using the
-    respective keys, the `extra` dict is not available as dict on the logrecord
-    by default.
-    """
 
-    def __init__(self, fmt=None, datefmt=None, extrafmt="%(message)s %(extra)s"):
-        """Create formatter."""
-        super().__init__(fmt, datefmt)
-        self._extrafmt = extrafmt
+def get_default_handler(filters=None, formatter=None):
+    """Get a default stream handler with custom formatting."""
+    handler = logging.StreamHandler()
+    handler.setFormatter(formatter or get_formatter())
+    for filter_ in filters or []:
+        handler.addFilter(filter_)
+    return handler
 
-    def format(self, record):
-        """Format a record."""
-        # pylint: disable=protected-access
-        if hasattr(record, "_extra") and record._extra:
-            msg = logging.Formatter.format(self, record)
-            msg = self._extrafmt % {"message": msg, "extra": record._extra}
-        else:
-            msg = logging.Formatter.format(self, record)
 
-        return msg
+def get_json_file_handler(config, filters=None, formatter=None):
+    """Get a file handler with custom JSON formatting and context data."""
+    log_file = config.get("LOG_FILE", None)
+    if log_file is None:
+        return None
+    handler = logging.handlers.RotatingFileHandler(
+        log_file,
+        maxBytes=config.get("LOG_FILE_MAX_SIZE", 0),
+        backupCount=config.get("LOG_FILE_COUNT", 0),
+    )
+    handler.setFormatter(formatter or get_json_formatter())
+    for filter_ in filters or []:
+        handler.addFilter(filter_)
+    return handler
