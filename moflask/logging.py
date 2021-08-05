@@ -39,7 +39,7 @@ def init_logger(app):
     logger.addHandler(get_default_handler(app.config))
 
     # Add a file handler too if configured.
-    file_handler = get_json_file_handler(app.config)
+    file_handler = get_json_file_handler(app.config, logger)
     if file_handler:
         logger.addHandler(file_handler)
 
@@ -133,22 +133,29 @@ def get_json_formatter(config):
 
 def get_default_handler(config, filters=None):
     """Get a default stream handler with custom formatting."""
-    handler = logging.StreamHandler()
+    handler = flask.logging.default_handler
     handler.setFormatter(get_formatter(config))
     for filter_ in filters or []:
         handler.addFilter(filter_)
     return handler
 
 
-def get_json_file_handler(config, filters=None):
+def get_json_file_handler(config, logger=None, filters=None):
     """Get a file handler with custom JSON formatting and context data."""
     log_file = config.get("LOG_FILE", None)
     if log_file is None:
         return None
-    handler = logging.handlers.RotatingFileHandler(
-        log_file,
-        maxBytes=config.get("LOG_FILE_MAX_SIZE", 0),
-        backupCount=config.get("LOG_FILE_COUNT", 0),
+    # Check for existing handler before adding a new one.
+    handler = next(
+        filter(
+            lambda h: getattr(h, "baseFilename", None) == log_file,
+            logger.handlers if logger else [],
+        ),
+        logging.handlers.RotatingFileHandler(
+            log_file,
+            maxBytes=config.get("LOG_FILE_MAX_SIZE", 0),
+            backupCount=config.get("LOG_FILE_COUNT", 0),
+        ),
     )
     handler.setFormatter(get_json_formatter(config))
     default_filters = [

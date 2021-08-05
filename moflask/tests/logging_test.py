@@ -32,6 +32,20 @@ def test_configuring_file_logger():
     assert app.logger.handlers[-1].baseFilename == "/tmp/moflask.logging_test.log"
 
 
+def test_handlers_are_added_once():
+    """Test that existing handlers are not added again."""
+    app = Flask("moflask")
+    app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
+
+    logging.init_logger(app)
+    assert len(app.logger.handlers) == 2
+    handlers1 = app.logger.handlers.copy()
+
+    logging.init_logger(app)
+    assert len(app.logger.handlers) == 2
+    assert app.logger.handlers == handlers1
+
+
 def test_app_context_filter():
     """Test app context enriches the LogRecord.
 
