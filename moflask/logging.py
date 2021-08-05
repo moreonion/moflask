@@ -33,7 +33,7 @@ except ImportError:
 def init_logger(app, extra_filters=None):
     """Configure the app’s logger with custom filters and handlers."""
     logger = logging.getLogger(app.name)
-    logger.setLevel(app.config.get("LOG_LEVEL", logging.INFO))
+    logger.setLevel(app.config.get("LOG_LEVEL", logging.DEBUG if app.debug else logging.INFO))
 
     # Configure a handler before accessing the logger via app.logger.
     logger.addHandler(get_default_handler(app.config, extra_filters))
