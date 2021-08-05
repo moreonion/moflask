@@ -9,7 +9,10 @@ setup(
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
     packages=["moflask"],
-    install_requires=["Flask"],
+    install_requires=[
+        "Flask",
+        "python-json-logger",
+    ],
     extras_require={"test": ["pytest", "python-json-logger"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
