@@ -46,6 +46,21 @@ def test_handlers_are_added_once():
     assert app.logger.handlers == handlers1
 
 
+def test_adding_extra_filters():
+    """Test extra filters are added to the handlers."""
+
+    def extra_filter(record):
+        record.test = "test"
+        return True
+
+    app = Flask("moflask")
+    app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
+
+    logging.init_logger(app, [extra_filter])
+    for handler in app.logger.handlers:
+        assert extra_filter in handler.filters
+
+
 def test_app_context_filter():
     """Test app context enriches the LogRecord.
 

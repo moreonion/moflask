@@ -30,16 +30,16 @@ except ImportError:
     current_user = None
 
 
-def init_logger(app):
+def init_logger(app, extra_filters=None):
     """Configure the app’s logger with custom filters and handlers."""
     logger = logging.getLogger(app.name)
     logger.setLevel(app.config.get("LOG_LEVEL", logging.INFO))
 
     # Configure a handler before accessing the logger via app.logger.
-    logger.addHandler(get_default_handler(app.config))
+    logger.addHandler(get_default_handler(app.config, extra_filters))
 
     # Add a file handler too if configured.
-    file_handler = get_json_file_handler(app.config, logger)
+    file_handler = get_json_file_handler(app.config, logger, extra_filters)
     if file_handler:
         logger.addHandler(file_handler)
 
