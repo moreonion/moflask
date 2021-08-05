@@ -1,19 +1,20 @@
 """Logging with some goodies.
 
 Provide a enhanced logging infrastructure:
-- Allow logging in JSON format (interesting for structured logging)
-- Automatically enrich log entries with contextual information from Flask or
-  Werkzeug such as the request IP, the response status code, ...
-- The filters are extensible
+- A default handler with a custom format (settings key `LOG_FORMAT`)
+- A file log handler in JSON format (interesting for structured logging)
+- Filters to enrich log entries with contextual information from Flask or
+  Werkzeug or requests such as the request IP, the response status code,…
 
-You can select logging in JSON with the settings key `LOG_JSON`. You will
-need to install `python-json-logger` for that.
+Settings options:
+- LOG_LEVEL: log level for the logger
+- LOG_FORMAT: string format for the default formatter
+- LOG_DATE_FORMAT: date format for the default formatter
+- LOG_FILE: path to the log file – if not set the file handler is disabled
+- LOG_FILE_INCLUDE: record fields to include in the JSON output
+- LOG_FILE_MAX_SIZE: maximum size of the logfile before a new file is started
+- LOG_FILE_COUNT: number of old log files to keep (if 0 the max size will be exceeded)
 
-If you do not use the JSON formatter the fallback formatter will be used
-which allows you to log *arbitrary* values from the log records `extra`
-attribute.
-
-Currently the same formatter will be used for all configured handlers.
 """
 
 import json
