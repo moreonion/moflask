@@ -89,7 +89,7 @@ pylint==2.6.0
     # via -r requirements-dev.in
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.10.1
+pytest-cov==2.12.1
     # via -r requirements-dev.in
 pytest==6.1.1
     # via
