@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+"""Package meta data for moflask."""
+
 from setuptools import setup
 
 setup(
@@ -10,7 +12,7 @@ setup(
     author_email="torotil@gmail.com",
     packages=["moflask"],
     install_requires=[
-        "Flask",
+        "Flask>=1.1",
         "python-json-logger",
     ],
     extras_require={"test": ["pytest", "python-json-logger"]},
