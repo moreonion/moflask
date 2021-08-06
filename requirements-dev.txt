@@ -112,7 +112,7 @@ six==1.15.0
     #   astroid
     #   packaging
     #   virtualenv
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
     # via pydocstyle
 toml==0.10.1
     # via
