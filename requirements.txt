@@ -6,7 +6,7 @@
 #
 click==7.1.2
     # via flask
-flask==1.1.2
+flask==2.0.1
     # via -r requirements.in
 itsdangerous==1.1.0
     # via flask
