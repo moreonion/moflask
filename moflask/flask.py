@@ -12,7 +12,7 @@ class BaseApp(Flask):
     @staticmethod
     def config_obj_from_env(env=None):
         """Find a config object that matches the current environment."""
-        env = env or os.getenv("FLASK_ENV", "Development").capitalize()
+        env = env or os.getenv("FLASK_ENV", "production").capitalize()
         path = os.getenv("FLASK_CONFIG_OBJECT", "settings." + env + "Config")
         return import_string(path)()
 
