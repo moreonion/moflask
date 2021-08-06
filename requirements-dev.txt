@@ -26,7 +26,7 @@ click==7.1.2
     #   flask
     #   pip-tools
     #   safety
-coverage==5.3
+coverage==5.5
     # via pytest-cov
 distlib==0.3.1
     # via virtualenv
