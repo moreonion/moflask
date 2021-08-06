@@ -16,7 +16,7 @@ markupsafe==1.1.1
     # via jinja2
 python-json-logger==2.0.1
     # via -r requirements.in
-werkzeug==1.0.1
+werkzeug==2.0.1
     # via flask
 
 # The following packages are considered to be unsafe in a requirements file:
