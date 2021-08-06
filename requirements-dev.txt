@@ -77,7 +77,7 @@ pip-tools==6.0.1
     # via -r requirements-dev.in
 pluggy==0.13.1
     # via pytest
-pre-commit==2.7.1
+pre-commit==2.13.0
     # via -r requirements-dev.in
 py==1.9.0
     # via pytest
