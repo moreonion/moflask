@@ -85,7 +85,7 @@ pycodestyle==2.6.0
     # via -r requirements-dev.in
 pydocstyle==5.1.1
     # via -r requirements-dev.in
-pylint==2.6.0
+pylint==2.9.6
     # via -r requirements-dev.in
 pyparsing==2.4.7
     # via packaging
