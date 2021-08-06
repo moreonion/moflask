@@ -114,7 +114,7 @@ six==1.15.0
     #   virtualenv
 snowballstemmer==2.0.0
     # via pydocstyle
-toml==0.10.1
+toml==0.10.2
     # via
     #   black
     #   dparse
