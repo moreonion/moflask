@@ -79,7 +79,7 @@ platformdirs==2.2.0
     # via virtualenv
 pluggy==0.13.1
     # via pytest
-pre-commit==2.13.0
+pre-commit==2.14.0
     # via -r requirements-dev.in
 py==1.10.0
     # via pytest
