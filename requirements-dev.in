@@ -1,0 +1,14 @@
+-r requirements.in
+flask-login
+
+# tooling
+black
+isort
+pip-tools
+pre-commit
+pycodestyle
+pydocstyle
+pylint
+pytest
+pytest-cov
+safety

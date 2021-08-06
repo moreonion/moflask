@@ -5,6 +5,8 @@ import os
 from flask import Flask
 from werkzeug.utils import import_string
 
+from moflask.logging import init_logger
+
 
 class BaseApp(Flask):
     """Flask App."""
@@ -27,10 +29,7 @@ class BaseApp(Flask):
         # 2. A config object passed as keyword argument: config=Object
         self.config.from_object(self.config_obj_from_env(env))
         self.config.from_object(config)
-
-        for handler in self.config.get("LOG_HANDLERS", []):
-            for logger in [self.logger]:
-                logger.addHandler(handler)
+        init_logger(self)
 
         if not self.sanity_check():
             raise RuntimeError("Sanity checks failed. Aborting!")

@@ -1,9 +1,9 @@
-from sqlalchemy import event, exc, select
 from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
+from sqlalchemy import event, exc, select
 
 
 class PingConnectionHandler(object):
-    """ Handle gone-away connections in the Pool.
+    """Handle gone-away connections in the Pool.
 
     This is mainly taken from the SQLAlchemy documentation.
     """
@@ -12,7 +12,7 @@ class PingConnectionHandler(object):
         self.engine = engine
 
     def register(self):
-        event.listen(self.engine, 'engine_connect', self.ping_connection)
+        event.listen(self.engine, "engine_connect", self.ping_connection)
 
     def ping_connection(self, connection, branch):
         if branch:
@@ -44,5 +44,5 @@ class PingConnectionHandler(object):
 class SQLAlchemy(_SQLAlchemy):
     def init_app(self, app):
         super().init_app(app)
-        if app.config.get('SQLALCHEMY_DISCONNECTION_HANDLING', True):
+        if app.config.get("SQLALCHEMY_DISCONNECTION_HANDLING", True):
             PingConnectionHandler(self.get_engine(app)).register()
