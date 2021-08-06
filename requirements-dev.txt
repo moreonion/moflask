@@ -69,7 +69,7 @@ packaging==20.4
     #   dparse
     #   pytest
     #   safety
-pathspec==0.8.0
+pathspec==0.9.0
     # via black
 pep517==0.10.0
     # via pip-tools
