@@ -130,7 +130,7 @@ urllib3==1.25.10
     # via requests
 virtualenv==20.0.33
     # via pre-commit
-werkzeug==1.0.1
+werkzeug==2.0.1
     # via flask
 wrapt==1.12.1
     # via astroid
