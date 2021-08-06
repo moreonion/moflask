@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name="moflask",
-    version="0.1",
+    version="1.0b1",
     description="Re-usable flask utilities.",
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
