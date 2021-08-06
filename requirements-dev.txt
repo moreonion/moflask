@@ -42,7 +42,7 @@ flask==1.1.2
     #   flask-login
 identify==1.5.5
     # via pre-commit
-idna==2.10
+idna==3.2
     # via requests
 iniconfig==1.0.1
     # via pytest
