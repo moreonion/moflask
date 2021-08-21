@@ -6,7 +6,7 @@
 #
 appdirs==1.4.4
     # via black
-astroid==2.6.6
+astroid==2.7.2
     # via pylint
 attrs==21.2.0
     # via pytest
