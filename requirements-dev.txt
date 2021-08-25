@@ -16,7 +16,7 @@ black==21.7b0
     # via -r requirements-dev.in
 certifi==2021.5.30
     # via requests
-cfgv==3.3.0
+cfgv==3.3.1
     # via pre-commit
 charset-normalizer==2.0.4
     # via requests
