@@ -12,7 +12,7 @@ attrs==21.2.0
     # via pytest
 backports.entry-points-selectable==1.1.0
     # via virtualenv
-black==21.7b0
+black==21.8b0
     # via -r requirements-dev.in
 certifi==2021.5.30
     # via requests
