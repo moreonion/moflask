@@ -40,7 +40,7 @@ flask==2.0.1
     # via
     #   -r requirements.in
     #   flask-login
-identify==2.2.12
+identify==2.2.14
     # via pre-commit
 idna==3.2
     # via requests
