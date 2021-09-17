@@ -20,6 +20,7 @@ Settings options:
 import json
 import logging
 import logging.handlers
+import os
 
 import flask
 from pythonjsonlogger import jsonlogger
@@ -143,7 +144,7 @@ def get_default_handler(config, filters=None):
 
 def get_json_file_handler(config, logger=None, filters=None):
     """Get a file handler with custom JSON formatting and context data."""
-    log_file = config.get("LOG_FILE", None)
+    log_file = config.get("LOG_FILE", os.environ.get("LOG_FILE", None))
     if log_file is None:
         return None
     # Check for existing handler before adding a new one.
