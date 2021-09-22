@@ -6,7 +6,6 @@ black
 isort
 pip-tools
 pre-commit
-pycodestyle
 pydocstyle
 pylint
 pytest
