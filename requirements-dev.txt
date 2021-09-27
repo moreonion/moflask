@@ -30,7 +30,7 @@ distlib==0.3.3
     # via virtualenv
 dparse==0.5.1
     # via safety
-filelock==3.0.12
+filelock==3.1.0
     # via virtualenv
 flask==2.0.1
     # via
