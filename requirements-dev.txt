@@ -96,7 +96,7 @@ pytest==6.2.5
     # via
     #   -r requirements-dev.in
     #   pytest-cov
-pytest-cov==2.12.1
+pytest-cov==3.0.0
     # via -r requirements-dev.in
 python-json-logger==2.0.2
     # via -r requirements.in
