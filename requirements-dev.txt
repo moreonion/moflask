@@ -32,7 +32,7 @@ dparse==0.5.1
     # via safety
 filelock==3.0.12
     # via virtualenv
-flask==2.0.1
+flask==2.0.2
     # via
     #   -r requirements.in
     #   flask-login
