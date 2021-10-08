@@ -1,9 +1,6 @@
 """Basic Flask App with a few enhancements."""
 
-import os
-
 from flask import Flask
-from werkzeug.utils import import_string
 
 from moflask.logging import init_logger
 
@@ -11,34 +8,49 @@ from moflask.logging import init_logger
 class BaseApp(Flask):
     """Flask App."""
 
-    @staticmethod
-    def config_obj_from_env(env=None):
-        """Find a config object that matches the current environment."""
-        env = env or os.getenv("FLASK_ENV", "production").capitalize()
-        path = os.getenv("FLASK_CONFIG_OBJECT", "settings." + env + "Config")
-        return import_string(path)()
-
     def __init__(self, *args, **kwargs):
         """Create a new app object."""
-        config = kwargs.pop("config", None)
-        env = kwargs.pop("env", None)
+        config = kwargs.pop("config", {})
+        testing = kwargs.pop("testing", False)
         super().__init__(*args, **kwargs)
-        # load app config
-        # 1. from an import path specfied in the FLASK_CONFIG_OBJECT
-        #    environmentfrom variable. Default: settings.DevelopmentConfig
-        # 2. A config object passed as keyword argument: config=Object
-        self.config.from_object(self.config_obj_from_env(env))
-        self.config.from_object(config)
-        init_logger(self)
+        self.sentry = None
+        self.load_config(config, testing)
+        self.init_defaults()
 
         if not self.sanity_check():
             raise RuntimeError("Sanity checks failed. Aborting!")
 
+    def load_config_defaults(self):
+        """Load app default config from "config_defaults.py" if available."""
+        self.config.from_pyfile("config_defaults.py", silent=True)
+
+    def load_config(self, config=None, testing=False):
+        """Load app config.
+
+        1. default config provided by the app
+        2. config object or dict passed as keyword argument
+        3. config file set in FLASK_SETTINGS environment variable
+        4. in testing, prefer "TEST_" prefixed settings if available
+        """
+        self.config["TESTING"] = testing
+        self.load_config_defaults()
+        if isinstance(config, dict):
+            self.config.update(config)
+        elif config:
+            self.config.from_object(config)
+        self.config.from_envvar("FLASK_SETTINGS", silent=True)
+        if self.testing:
+            self.config.update(self.config.get_namespace("TEST_", lowercase=False))
+
+    def init_defaults(self):
+        """Initialize default app extensions."""
+        init_logger(self)
         self.init_sentry()
 
     def init_sentry(self):
         """Initialize Sentry."""
         if self.config.get("SENTRY_DSN", False):
+            # pylint: disable=import-outside-toplevel,import-error
             from raven.contrib.flask import Sentry
 
             self.sentry = Sentry(self)
