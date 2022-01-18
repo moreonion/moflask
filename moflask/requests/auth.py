@@ -12,7 +12,7 @@ class AuthAppClient(rest.Client):
     """Client for the impact-stack auth app."""
 
     @classmethod
-    def from_config(cls):
+    def from_app_config(cls):
         """Create a new auth-app client instance from the app config."""
         return cls(flask.current_app.config.get("IMPACT_STACK_AUTH_APP_URL"))
 
@@ -30,9 +30,9 @@ class AuthAppMiddleware:
     The middleware transparently requests an API-token from the auth-app on-demand.
     """
 
-    def __init__(self, client, organization):
+    def __init__(self, organization, client=None):
         """Create new auth-app requests auth middleware."""
-        self.client = client
+        self.client = client or AuthAppClient.from_app_config()
         self.organization = organization
 
     def get_token(self):

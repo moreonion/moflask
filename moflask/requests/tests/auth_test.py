@@ -27,7 +27,7 @@ class AuthAppClientTest:
     @staticmethod
     def test_get_token(requests_mock):
         """Test getting a token."""
-        client = auth.AuthAppClient.from_config()
+        client = auth.AuthAppClient.from_app_config()
         requests_mock.post(rm.ANY, json={"token": "TOKEN.org1"})
         token = client.get_token("org1")
         assert token == "TOKEN.org1"
@@ -38,11 +38,17 @@ class AuthAppMiddlewareTest:
     """Test the auth-app middleware."""
 
     @staticmethod
+    def test_default_client_from_app_config():
+        """Test that instantiating without a client uses client configured from the app config."""
+        middleware = auth.AuthAppMiddleware("org1")
+        assert isinstance(middleware.client, auth.AuthAppClient)
+
+    @staticmethod
     def test_call_adds_header():
         """Test that the JWT token is added to the header."""
         client = mock.Mock(spec=auth.AuthAppClient)
         client.get_token.return_value = "TOKEN.org1"
-        middleware = auth.AuthAppMiddleware(client, "org1")
+        middleware = auth.AuthAppMiddleware("org1", client=client)
 
         request = mock.Mock(headers={})
         middleware(request)
