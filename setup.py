@@ -15,7 +15,10 @@ setup(
         "Flask>=1.1",
         "python-json-logger",
     ],
-    extras_require={"test": ["pytest", "python-json-logger"]},
+    extras_require={
+        "test": ["pytest", "python-json-logger"],
+        "requests": ["requests"],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

@@ -1,5 +1,6 @@
 -r requirements.in
 flask-login
+requests-mock
 
 # tooling
 black

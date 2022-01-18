@@ -107,11 +107,18 @@ pyyaml==5.4.1
 regex==2021.8.28
     # via black
 requests==2.26.0
-    # via safety
+    # via
+    #   -r requirements.in
+    #   requests-mock
+    #   safety
+requests-mock==1.9.3
+    # via -r requirements-dev.in
 safety==1.10.3
     # via -r requirements-dev.in
 six==1.16.0
-    # via virtualenv
+    # via
+    #   requests-mock
+    #   virtualenv
 snowballstemmer==2.1.0
     # via pydocstyle
 toml==0.10.2
