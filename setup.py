@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name="moflask",
-    version="1.0b1",
+    version="1.0.0",
     description="Re-usable flask utilities.",
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
@@ -20,10 +20,10 @@ setup(
         "requests": ["requests"],
     },
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     url="https://github.com/moreonion/moflask",
-    download_url="https://github.com/moreonion/moflask/archive/v0.1.tar.gz",
+    download_url="https://github.com/moreonion/moflask/archive/v1.0.0.tar.gz",
 )
