@@ -27,7 +27,7 @@ class AuthAppClientTest:
     @staticmethod
     def test_get_token(requests_mock):
         """Test getting a token."""
-        client = auth.AuthAppClient.from_app_config()
+        client = auth.AuthAppClient.from_app()
         requests_mock.post(rm.ANY, json={"token": "TOKEN.org1"})
         token = client.get_token("org1")
         assert token == "TOKEN.org1"
