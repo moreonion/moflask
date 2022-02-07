@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
     name="moflask",
-    version="1.0.1",
+    version="1.1.0",
     description="Re-usable flask utilities.",
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
@@ -25,5 +25,5 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
     url="https://github.com/moreonion/moflask",
-    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.0.1.tar.gz",
+    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.1.0.tar.gz",
 )
