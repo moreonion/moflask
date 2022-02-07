@@ -9,18 +9,26 @@ from . import rest
 
 
 class AuthAppClient(rest.Client):
-    """Client for the impact-stack auth app."""
+    """A REST client for retrieving JWTs from the auth-app."""
 
     @classmethod
-    def from_app_config(cls):
-        """Create a new auth-app client instance from the app config."""
-        return cls(flask.current_app.config.get("IMPACT_STACK_AUTH_APP_URL"))
+    def from_app(cls, app=None):
+        """Create a new instance by reading the config from the Flask app config."""
+        app = app or flask.current_app
+        return cls(
+            app.config["IMPACT_STACK_AUTH_APP_URL"],
+            app.config["IMPACT_STACK_AUTH_APP_KEY"],
+        )
+
+    def __init__(self, base_url, api_key):
+        """Create a new client instance."""
+        super().__init__(base_url)
+        self.api_key = api_key
 
     def get_token(self, organization):
         """Get a JWT token for a sub-organization."""
-        api_key = flask.current_app.config.get("IMPACT_STACK_AUTH_APP_KEY")
         organization = urllib.parse.quote_plus(organization)
-        response = self.post("token", organization, json=api_key)
+        response = self.post("token", organization, json=self.api_key)
         return response.json()["token"]
 
 
@@ -32,7 +40,7 @@ class AuthAppMiddleware:
 
     def __init__(self, organization, client=None):
         """Create new auth-app requests auth middleware."""
-        self.client = client or AuthAppClient.from_app_config()
+        self.client = client or AuthAppClient.from_app()
         self.organization = organization
 
     def get_token(self):
