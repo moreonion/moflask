@@ -18,6 +18,7 @@ setuptools.setup(
     extras_require={
         "test": ["pytest", "python-json-logger"],
         "requests": ["requests"],
+        "jwt": ["flask-jwt-extended"],
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
