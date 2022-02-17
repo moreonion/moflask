@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements-dev.txt requirements-dev.in
 #
+-e .
+    # via -r requirements.in
 astroid==2.9.3
     # via pylint
 attrs==21.4.0
@@ -35,6 +37,7 @@ flask==2.0.2
     #   -r requirements.in
     #   flask-jwt-extended
     #   flask-login
+    #   moflask
 flask-jwt-extended==4.3.1
     # via -r requirements-dev.in
 flask-login==0.5.0
@@ -110,7 +113,9 @@ pytest==6.2.5
 pytest-cov==3.0.0
     # via -r requirements-dev.in
 python-json-logger==2.0.2
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   moflask
 pyyaml==6.0
     # via
     #   dparse

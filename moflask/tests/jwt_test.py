@@ -1,8 +1,5 @@
 """Tests for the JWT auth-app utilities."""
 
-import contextlib
-from unittest import mock
-
 import flask
 import flask_jwt_extended
 import pytest
@@ -26,20 +23,6 @@ def fixture_protected_app():
     return app
 
 
-@pytest.fixture(name="inject_session")
-def fixture_inject_session():
-    """Define a helper function to mock out JWT authentication checks."""
-
-    @contextlib.contextmanager
-    def inject_session(session):
-        with mock.patch("flask_jwt_extended.verify_jwt_in_request"):
-            with mock.patch.object(jwt, "get_current_session") as mock_current_session:
-                mock_current_session.return_value = session
-                yield
-
-    return inject_session
-
-
 def test_getting_session_data_in_authorized_request(protected_app):
     """Send an authorized request to the endpoint."""
     session = jwt.Session("user-id", "organization", ["app"])
@@ -54,11 +37,11 @@ def test_getting_session_data_in_authorized_request(protected_app):
     assert response.json["user_claims"]["roles"] == ["app"]
 
 
-def test_getting_injected_session_data(protected_app, inject_session):
+def test_getting_injected_session_data(protected_app, jwt_inject_session):
     """Inject session using the settings."""
     session = jwt.Session("user-id", "organization", ["app"])
 
-    with inject_session(session):
+    with jwt_inject_session(session):
         with protected_app.test_client() as client:
             response = client.get("/")
 

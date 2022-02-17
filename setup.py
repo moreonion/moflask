@@ -25,6 +25,11 @@ setuptools.setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
+    entry_points={
+        "pytest11": [
+            "moflask = moflask.pytest_plugin",
+        ],
+    },
     url="https://github.com/moreonion/moflask",
     download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.1.0.tar.gz",
 )
