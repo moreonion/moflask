@@ -104,13 +104,8 @@ def check_roles(session: Session, admitted_roles: Iterable[str]):
 
 def get_session():
     """Get a session for the current request."""
-    if flask.current_app.config["JWT_ENABLED"]:
-        flask_jwt_extended.verify_jwt_in_request()
-        session = flask_jwt_extended.get_current_user()
-    else:
-        session = flask.current_app.config["JWT_INJECT_SESSION"]
-        if not session:
-            raise NoAuthorizationError("Disabled JWT but no session injected.")
+    flask_jwt_extended.verify_jwt_in_request()
+    session = get_current_session()
     session.push_to_context()
     return session
 
