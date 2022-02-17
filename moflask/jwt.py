@@ -60,14 +60,6 @@ class Manager(flask_jwt_extended.JWTManager):
 
     session_cls = Session
 
-    def init_app(self, app):
-        """Initialize flask app configuration."""
-        super().init_app(app)
-        # Allow JWT support to be switched off (eg for testing)
-        app.config.setdefault("JWT_ENABLED", True)
-        # If JWT_ENABLED is off then this can be used to inject a session into the request context.
-        app.config.setdefault("JWT_INJECT_SESSION", None)
-
 
 manager = Manager()
 
@@ -104,15 +96,8 @@ def check_roles(session: Session, admitted_roles: Iterable[str]):
 
 def get_session():
     """Get a session for the current request."""
-    if flask.current_app.config["JWT_ENABLED"]:
-        flask_jwt_extended.verify_jwt_in_request()
-        session = flask_jwt_extended.get_current_user()
-    else:
-        session = flask.current_app.config["JWT_INJECT_SESSION"]
-        if not session:
-            raise NoAuthorizationError("Disabled JWT but no session injected.")
-        ctx_stack.top.jwt = {}
-        ctx_stack.top.jwt_user = {"loaded_user": session}
+    flask_jwt_extended.verify_jwt_in_request()
+    session = get_current_session()
     session.push_to_context()
     return session
 
