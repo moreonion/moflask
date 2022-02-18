@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements-dev.txt requirements-dev.in
 #
+-e .
+    # via -r requirements.in
 astroid==2.9.3
     # via pylint
 attrs==21.4.0
@@ -33,7 +35,11 @@ filelock==3.4.2
 flask==2.0.2
     # via
     #   -r requirements.in
+    #   flask-jwt-extended
     #   flask-login
+    #   moflask
+flask-jwt-extended==4.3.1
+    # via -r requirements-dev.in
 flask-login==0.5.0
     # via -r requirements-dev.in
 identify==2.4.5
@@ -94,6 +100,8 @@ py==1.11.0
     # via pytest
 pydocstyle==6.1.1
     # via -r requirements-dev.in
+pyjwt==2.3.0
+    # via flask-jwt-extended
 pylint==2.12.2
     # via -r requirements-dev.in
 pyparsing==3.0.7
@@ -105,7 +113,9 @@ pytest==6.2.5
 pytest-cov==3.0.0
     # via -r requirements-dev.in
 python-json-logger==2.0.2
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   moflask
 pyyaml==6.0
     # via
     #   dparse
@@ -151,7 +161,9 @@ urllib3==1.26.8
 virtualenv==20.13.0
     # via pre-commit
 werkzeug==2.0.2
-    # via flask
+    # via
+    #   flask
+    #   flask-jwt-extended
 wheel==0.37.1
     # via pip-tools
 wrapt==1.13.3

@@ -18,12 +18,18 @@ setuptools.setup(
     extras_require={
         "test": ["pytest", "python-json-logger"],
         "requests": ["requests"],
+        "jwt": ["flask-jwt-extended"],
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     ],
+    entry_points={
+        "pytest11": [
+            "moflask = moflask.pytest_plugin",
+        ],
+    },
     url="https://github.com/moreonion/moflask",
     download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.1.0.tar.gz",
 )

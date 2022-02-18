@@ -1,5 +1,6 @@
 -r requirements.in
 flask-login
+flask-jwt-extended
 requests-mock
 
 # tooling
