@@ -65,8 +65,8 @@ def test_denying_access_without_an_admitted_role(protected_app, jwt_inject_sessi
         with protected_app.test_client() as client:
             response = client.get("/")
 
-    assert response.status_code == 401
-    assert response.json == {"msg": "The session doesn’t have any of the required roles."}
+    assert response.status_code == 403
+    assert "The user has none of the admitted roles" in response.data.decode()
 
 
 def test_anonymous_session_with_optional(protected_app):
