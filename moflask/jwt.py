@@ -10,7 +10,7 @@ from typing import Iterable
 
 import flask
 import flask_jwt_extended
-from flask_jwt_extended.exceptions import NoAuthorizationError
+import werkzeug.exceptions
 
 ctx_stack = flask._request_ctx_stack  # pylint: disable=protected-access
 get_current_session = flask_jwt_extended.get_current_user
@@ -99,7 +99,7 @@ manager.user_identity_loader(lambda session: None)
 def check_roles(session: Session, admitted_roles: Iterable[str]):
     """Check whether the session has any of the admitted roles."""
     if not session.has_any_role_of(admitted_roles):
-        raise NoAuthorizationError("The session doesn’t have any of the required roles.")
+        raise werkzeug.exceptions.Forbidden("The user has none of the admitted roles.")
 
 
 def required(admitted_roles: Iterable[str] = None, optional=False, **kwargs):
