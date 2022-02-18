@@ -88,11 +88,7 @@ def create_session(_jwt_header, jwt_data):
 
 @manager.additional_claims_loader
 def session_to_token(session: Session):
-    """Generate session into to JWT claims.
-
-    Note: This is only needed for testing. In production this app is not supposed to create any
-    tokens. The auth-app is responsible for that.
-    """
+    """Generate JWT claims that represent the session."""
     return session.to_token_data()
 
 
