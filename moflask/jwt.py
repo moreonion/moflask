@@ -77,8 +77,11 @@ manager = Manager()
 def create_session(_jwt_header, jwt_data):
     """Create a session object from token data.
 
-    The session is made available in flask_jwt_extended.current_user and via
-    flack_jwt_extended.get_current_user().
+    The session is made available in either of:
+    - flask_jwt_extended.current_user
+    - flask_jwt_extended.get_current_user()
+    - moflask.jwt.get_current_session()
+    with the latter being considered the most idiomatic.
     """
     return Session.from_raw_token(jwt_data)
 

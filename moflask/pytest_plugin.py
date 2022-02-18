@@ -5,6 +5,14 @@ from unittest import mock
 
 import pytest
 
+from . import jwt
+
+
+def _push_session_to_context(session):
+    context = jwt.ctx_stack.top
+    context.jwt = session.to_token_data()
+    context.jwt_user = {"loaded_user": session}
+
 
 @pytest.fixture(name="jwt_inject_session")
 def fixture_inject_session():
@@ -12,9 +20,8 @@ def fixture_inject_session():
 
     @contextlib.contextmanager
     def inject_session(session):
-        with mock.patch("flask_jwt_extended.verify_jwt_in_request"):
-            with mock.patch("moflask.jwt.get_current_session") as mock_current_session:
-                mock_current_session.return_value = session
-                yield
+        with mock.patch("flask_jwt_extended.verify_jwt_in_request") as mock_verify:
+            mock_verify.side_effect = lambda: _push_session_to_context(session)
+            yield
 
     return inject_session
