@@ -102,15 +102,7 @@ def check_roles(session: Session, admitted_roles: Iterable[str]):
         raise NoAuthorizationError("The session doesn’t have any of the required roles.")
 
 
-def get_session():
-    """Get a session for the current request."""
-    flask_jwt_extended.verify_jwt_in_request()
-    session = get_current_session()
-    manager.push_context(session)
-    return session
-
-
-def required(admitted_roles: Iterable[str] = None):
+def required(admitted_roles: Iterable[str] = None, optional=False):
     """Require JWT authentication for a route.
 
     This decorator is a replacement for all of the flask_jwt_extended decorators.
@@ -125,7 +117,12 @@ def required(admitted_roles: Iterable[str] = None):
     def wrap(wrapped_fn):
         @functools.wraps(wrapped_fn)
         def wrapper(*args, **kwargs):
-            session = get_session()
+            if flask_jwt_extended.verify_jwt_in_request(optional=optional):
+                session = get_current_session()
+            elif optional:
+                session = Session(None, None, [])
+                ctx_stack.top.jwt_user = {"loaded_user": session}
+            manager.push_context(session)
             if session and admitted_roles is not None:
                 check_roles(session, admitted_roles)
             return wrapped_fn(*args, **kwargs)

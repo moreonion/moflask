@@ -20,6 +20,12 @@ def fixture_protected_app():
         session = jwt.get_current_session()
         return flask.jsonify(session.to_token_data())
 
+    @app.route("/optional")
+    @jwt.required(optional=True)
+    def dump_session2():
+        session = jwt.get_current_session()
+        return flask.jsonify(session.to_token_data())
+
     return app
 
 
@@ -49,3 +55,25 @@ def test_getting_injected_session_data(protected_app, jwt_inject_session):
     assert response.json["identity"] == "user-id"
     assert response.json["user_claims"]["org"] == "organization"
     assert response.json["user_claims"]["roles"] == ["app"]
+
+
+def test_denying_access_without_an_admitted_role(protected_app, jwt_inject_session):
+    """Test the error response given when the JWT doesn’t have any of the admitted roles."""
+    session = jwt.Session("user-id", "organization", ["not-app"])
+
+    with jwt_inject_session(session):
+        with protected_app.test_client() as client:
+            response = client.get("/")
+
+    assert response.status_code == 401
+    assert response.json == {"msg": "The session doesn’t have any of the required roles."}
+
+
+def test_anonymous_session_with_optional(protected_app):
+    """Test that a session is created on-the-fly for anonymous users."""
+    with protected_app.test_client() as client:
+        response = client.get("/optional")
+    assert response.status_code == 200
+    assert response.json["identity"] is None
+    assert response.json["user_claims"]["org"] is None
+    assert response.json["user_claims"]["roles"] == []
