@@ -102,7 +102,7 @@ def check_roles(session: Session, admitted_roles: Iterable[str]):
         raise NoAuthorizationError("The session doesn’t have any of the required roles.")
 
 
-def required(admitted_roles: Iterable[str] = None, optional=False):
+def required(admitted_roles: Iterable[str] = None, optional=False, **kwargs):
     """Require JWT authentication for a route.
 
     This decorator is a replacement for all of the flask_jwt_extended decorators.
@@ -113,11 +113,12 @@ def required(admitted_roles: Iterable[str] = None, optional=False):
     The behaviour can be configured using the keyword parameters:
     - admitted_roles: Only allow session with any of these roles to access the route.
     """
+    decorator_kwargs = kwargs
 
     def wrap(wrapped_fn):
         @functools.wraps(wrapped_fn)
         def wrapper(*args, **kwargs):
-            if flask_jwt_extended.verify_jwt_in_request(optional=optional):
+            if flask_jwt_extended.verify_jwt_in_request(optional=optional, **decorator_kwargs):
                 session = get_current_session()
             elif optional:
                 session = Session(None, None, [])
