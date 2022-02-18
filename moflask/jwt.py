@@ -31,12 +31,6 @@ class Session:
         self.org = org
         self.roles = set(roles or [])
 
-    def push_to_context(self):
-        """Set request context variables for the authenticated user.
-
-        Some apps don’t need anything besides the raw session so this is just a stub per default.
-        """
-
     def has_any_role_of(self, roles: Iterable[str]):
         """Check if the session has any of the given roles."""
         return any(role in self.roles for role in roles)
@@ -58,7 +52,22 @@ class Session:
 class Manager(flask_jwt_extended.JWTManager):
     """A JWTManager subclass with a bit of custom behaviour."""
 
-    session_cls = Session
+    @staticmethod
+    def _push_context_callback(session: Session, context):  # pylint: disable=method-hidden
+        """Implement a default push context callback doing nothing."""
+
+    def push_context(self, session):
+        """Push data to the request context."""
+        self._push_context_callback(session, ctx_stack.top)
+
+    def push_context_callback(self, callback):
+        """Register a callback for pushing data to the request context.
+
+        Most commonly this callback would load a user or organization object from the database to be
+        used later in the request. The callback can throw werkzeug.exceptions to interrupt the
+        request handling.
+        """
+        self._push_context_callback = callback
 
 
 manager = Manager()
@@ -71,7 +80,7 @@ def create_session(_jwt_header, jwt_data):
     The session is made available in flask_jwt_extended.current_user and via
     flack_jwt_extended.get_current_user().
     """
-    return manager.session_cls.from_raw_token(jwt_data)
+    return Session.from_raw_token(jwt_data)
 
 
 @manager.additional_claims_loader
@@ -98,7 +107,7 @@ def get_session():
     """Get a session for the current request."""
     flask_jwt_extended.verify_jwt_in_request()
     session = get_current_session()
-    session.push_to_context()
+    manager.push_context(session)
     return session
 
 
