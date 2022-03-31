@@ -77,3 +77,14 @@ def test_anonymous_session_with_optional(protected_app):
     assert response.json["identity"] is None
     assert response.json["user_claims"]["org"] is None
     assert response.json["user_claims"]["roles"] == []
+
+
+def test_anonymous_session_with_organization(protected_app):
+    """Test that sessions for anonymous requests read the x-ist-org header."""
+    with protected_app.test_client() as client:
+        # Showcase that the header name is not case-sensitive.
+        response = client.get("/optional", headers={"X-IsT-OrG": "test-org"})
+    assert response.status_code == 200
+    assert response.json["identity"] is None
+    assert response.json["user_claims"]["org"] == "test-org"
+    assert response.json["user_claims"]["roles"] == []
