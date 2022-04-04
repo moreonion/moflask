@@ -25,6 +25,12 @@ class Session:
         claims = token["user_claims"]
         return cls(token["identity"], claims["org"], claims["roles"])
 
+    @classmethod
+    def create_anonymous_session(cls):
+        """Create an anonymous session from the request headers."""
+        org = flask.request.headers.get("x-ist-org", None)
+        return cls(None, org, [])
+
     def __init__(self, identity: str, org: str, roles: Iterable[str] = None):
         """Create a new session instance."""
         self.identity = identity
@@ -121,7 +127,7 @@ def required(admitted_roles: Iterable[str] = None, optional=False, **kwargs):
             if flask_jwt_extended.verify_jwt_in_request(optional=optional, **decorator_kwargs):
                 session = get_current_session()
             elif optional:
-                session = Session(None, None, [])
+                session = Session.create_anonymous_session()
                 ctx_stack.top.jwt_user = {"loaded_user": session}
             manager.push_context(session)
             if session and admitted_roles is not None:
