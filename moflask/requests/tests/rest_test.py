@@ -28,6 +28,17 @@ class ClientTest:
         assert not mock_request.called
 
     @staticmethod
+    @mock.patch("moflask.requests.sessions.Session.request")
+    def test_returning_data_as_response(mock_request):
+        """Test that Client.request(json_response=True) returns the json data."""
+        test_data = {"data": "test"}
+        mock_request.return_value = mock.Mock(json=mock.Mock(return_value=test_data))
+        assert mock_request().json() == test_data
+        client = rest.Client("https://example.org")
+        data = client.get(json_response=True)
+        assert data == {"data": "test"}
+
+    @staticmethod
     @mock.patch("requests.Session.send")
     def test_auth_middleware(mock_send):
         """Test that the a configured auth middleware is called and can manipulate the request."""

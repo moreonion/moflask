@@ -26,7 +26,7 @@ class Client:
         verb = name.upper()
         return functools.partial(self.request, verb)
 
-    def request(self, method, *path_parts, path=None, url=None, **kwargs):
+    def request(self, method, *path_parts, path=None, url=None, json_response=False, **kwargs):
         """Send a request to the API-endpoint and handle the response.
 
         This accepts either of (the first of these wins):
@@ -45,4 +45,4 @@ class Client:
             url = self._base_url + path
         response = self._session.request(method, url, **kwargs)
         response.raise_for_status()
-        return response
+        return response.json() if json_response else response
