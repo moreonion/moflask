@@ -6,6 +6,7 @@ The JWT’s claims provide a user identifier, an organization and the current ro
 """
 
 import functools
+import uuid
 from typing import Iterable
 
 import flask
@@ -23,7 +24,7 @@ class Session:
     def from_raw_token(cls, token: dict):
         """Create a session from raw JWT token data."""
         claims = token["user_claims"]
-        return cls(token["identity"], claims["org"], claims["roles"])
+        return cls(token["identity"], claims["org"], claims["roles"], claims["session_id"])
 
     @classmethod
     def create_anonymous_session(cls):
@@ -31,11 +32,14 @@ class Session:
         org = flask.request.headers.get("x-ist-org", None)
         return cls(None, org, [])
 
-    def __init__(self, identity: str, org: str, roles: Iterable[str] = None):
+    def __init__(
+        self, identity: str, org: str, roles: Iterable[str] = None, custom_uuid: str = None
+    ):
         """Create a new session instance."""
         self.identity = identity
         self.org = org
         self.roles = set(roles or [])
+        self.session_id = custom_uuid or str(uuid.uuid4())
 
     def has_any_role_of(self, roles: Iterable[str]):
         """Check if the session has any of the given roles."""
@@ -49,6 +53,7 @@ class Session:
         return {
             "identity": self.identity,
             "user_claims": {
+                "session_id": self.session_id,
                 "org": self.org,
                 "roles": list(self.roles),
             },
