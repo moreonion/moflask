@@ -2,12 +2,16 @@
 
 """Package meta data for moflask."""
 
+import pathlib
+
 import setuptools
 
 setuptools.setup(
     name="moflask",
-    version="1.2.2",
+    version="1.3.0",
     description="Re-usable flask utilities.",
+    long_description=(pathlib.Path(__file__).parent / "README.md").read_text(encoding="utf-8"),
+    long_description_content_type="text/markdown",
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
     packages=setuptools.find_packages(),
@@ -31,5 +35,5 @@ setuptools.setup(
         ],
     },
     url="https://github.com/moreonion/moflask",
-    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.2.2.tar.gz",
+    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.3.0.tar.gz",
 )
