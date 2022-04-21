@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
     name="moflask",
-    version="1.2.2",
+    version="1.3.0",
     description="Re-usable flask utilities.",
     author="Roman Zimmermann",
     author_email="torotil@gmail.com",
@@ -31,5 +31,5 @@ setuptools.setup(
         ],
     },
     url="https://github.com/moreonion/moflask",
-    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.2.2.tar.gz",
+    download_url="https://github.com/moreonion/moflask/archive/refs/tags/v1.3.0.tar.gz",
 )
