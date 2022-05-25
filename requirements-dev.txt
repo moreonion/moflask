@@ -37,7 +37,7 @@ flask==2.0.2
     #   -r requirements.in
     #   flask-jwt-extended
     #   flask-login
-    #   moflask
+    #   sanitized-package
 flask-jwt-extended==4.3.1
     # via -r requirements-dev.in
 flask-login==0.5.0
@@ -46,14 +46,6 @@ identify==2.4.5
     # via pre-commit
 idna==3.3
     # via requests
-importlib-metadata==4.10.1
-    # via
-    #   click
-    #   pep517
-    #   pluggy
-    #   pre-commit
-    #   pytest
-    #   virtualenv
 iniconfig==1.1.1
     # via pytest
 isort==5.10.1
@@ -100,7 +92,7 @@ py==1.11.0
     # via pytest
 pydocstyle==6.1.1
     # via -r requirements-dev.in
-pyjwt==2.3.0
+pyjwt==2.4.0
     # via flask-jwt-extended
 pylint==2.12.2
     # via -r requirements-dev.in
@@ -115,7 +107,7 @@ pytest-cov==3.0.0
 python-json-logger==2.0.2
     # via
     #   -r requirements.in
-    #   moflask
+    #   sanitized-package
 pyyaml==6.0
     # via
     #   dparse
@@ -146,16 +138,8 @@ tomli==1.2.3
     #   black
     #   coverage
     #   pep517
-typed-ast==1.5.2
-    # via
-    #   astroid
-    #   black
 typing-extensions==4.0.1
-    # via
-    #   astroid
-    #   black
-    #   importlib-metadata
-    #   pylint
+    # via black
 urllib3==1.26.8
     # via requests
 virtualenv==20.13.0
@@ -168,10 +152,6 @@ wheel==0.37.1
     # via pip-tools
 wrapt==1.13.3
     # via astroid
-zipp==3.7.0
-    # via
-    #   importlib-metadata
-    #   pep517
 
 # The following packages are considered to be unsafe in a requirements file:
 # pip
