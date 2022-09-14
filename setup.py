@@ -22,7 +22,7 @@ setuptools.setup(
     extras_require={
         "test": ["pytest", "python-json-logger"],
         "requests": ["requests"],
-        "jwt": ["flask-jwt-extended"],
+        "jwt": ["flask-jwt-extended>=4.4.4,<5"],
     },
     classifiers=[
         "Development Status :: 5 - Production/Stable",

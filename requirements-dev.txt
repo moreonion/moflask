@@ -40,7 +40,7 @@ flask==2.2.2
     #   flask-jwt-extended
     #   flask-login
     #   moflask
-flask-jwt-extended==4.4.3
+flask-jwt-extended==4.4.4
     # via -r requirements-dev.in
 flask-login==0.6.2
     # via -r requirements-dev.in

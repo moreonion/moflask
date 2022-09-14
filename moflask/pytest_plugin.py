@@ -12,7 +12,7 @@ import pytest
 # Check whether flask_jwt_extended (optional dependency) is installed.
 JWT_INSTALLED = False
 try:
-    from . import jwt
+    from . import jwt  # pylint: disable=unused-import
 
     JWT_INSTALLED = True
 except ModuleNotFoundError:
@@ -20,12 +20,13 @@ except ModuleNotFoundError:
 
 
 if JWT_INSTALLED:
+    import flask
 
-    def _push_session_to_context(session):
-        context = jwt.ctx_stack.top
-        context.jwt = session.to_token_data()
-        context.jwt_user = {"loaded_user": session}
-        return None, context.jwt
+    def _push_session_to_context(session, context):
+        # pylint: disable=protected-access
+        context._jwt_extended_jwt = session.to_token_data()
+        context._jwt_extended_jwt_user = {"loaded_user": session}
+        return None, context
 
     @pytest.fixture(name="jwt_inject_session")
     def fixture_inject_session():
@@ -34,7 +35,9 @@ if JWT_INSTALLED:
         @contextlib.contextmanager
         def inject_session(session):
             with mock.patch("flask_jwt_extended.verify_jwt_in_request") as mock_verify:
-                mock_verify.side_effect = lambda *args, **kwargs: _push_session_to_context(session)
+                mock_verify.side_effect = lambda *args, **kwargs: _push_session_to_context(
+                    session, flask.g
+                )
                 yield
 
         return inject_session
