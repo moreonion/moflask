@@ -1,5 +1,0 @@
--e .
-flask>=1.1
-pip-tools
-python-json-logger
-requests
