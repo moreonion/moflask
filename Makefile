@@ -18,6 +18,7 @@ help:
 install: $(VENV)/.pip-installed-production
 
 development: $(VENV)/.pip-installed-development .git/hooks/pre-commit
+	$(VENV)/bin/pip install -e .
 
 test:
 	$(VENV)/bin/pytest --cov tests
