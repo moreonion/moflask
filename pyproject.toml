@@ -1,3 +1,59 @@
+[project]
+name = "moflask"
+version = "1.3.0"
+description = "Re-usable flask utilities."
+authors = [
+  {name = "Roman Zimmermann", email="roman@more-onion.com"},
+]
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers=[
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+]
+dependencies = [
+  "flask>=1.1",
+  "python-json-logger",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "flask-jwt-extended",
+  "flask-login",
+  "isort",
+  "pip-tools",
+  "pre-commit",
+  "pydocstyle",
+  "pylint",
+  "pytest",
+  "pytest-cov",
+  "requests-mock",
+  "safety",
+]
+requests = [
+  "requests",
+]
+jwt = [
+  "flask-jwt-extended>=4.4.4,<5",
+]
+
+[project.entry-points.pytest11]
+moflask = "moflask.pytest_plugin"
+
+[build-system]
+requires = [
+  "setuptools>=42",
+  "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["moflask"]
+
+[project.urls]
+repository = "https://github.com/moreonion/moflask"
+
 [tool.black]
 line-length = 100
 

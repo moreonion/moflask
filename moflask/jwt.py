@@ -13,7 +13,6 @@ import flask
 import flask_jwt_extended
 import werkzeug.exceptions
 
-ctx_stack = flask._request_ctx_stack  # pylint: disable=protected-access
 get_current_session = flask_jwt_extended.get_current_user
 
 
@@ -69,7 +68,7 @@ class Manager(flask_jwt_extended.JWTManager):
 
     def push_context(self, session):
         """Push data to the request context."""
-        self._push_context_callback(session, ctx_stack.top)
+        self._push_context_callback(session, flask.g)
 
     def push_context_callback(self, callback):
         """Register a callback for pushing data to the request context.
@@ -133,7 +132,8 @@ def required(admitted_roles: Iterable[str] = None, optional=False, **kwargs):
                 session = get_current_session()
             elif optional:
                 session = Session.create_anonymous_session()
-                ctx_stack.top.jwt_user = {"loaded_user": session}
+                # pylint: disable=protected-access
+                flask.g._jwt_extended_jwt_user = {"loaded_user": session}
             manager.push_context(session)
             if session and admitted_roles is not None:
                 check_roles(session, admitted_roles)
