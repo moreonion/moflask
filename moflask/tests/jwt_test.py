@@ -49,7 +49,7 @@ def fixture_protected_app():
     app.config["JWT_SECRET_KEY"] = "test-secret-key"
     jwt.manager.init_app(app)
 
-    @app.route("/")
+    @app.route("/", methods=["GET", "OPTIONS"])
     @jwt.required(admitted_roles=["app"])
     def dump_session():
         session = jwt.get_current_session()
@@ -103,6 +103,14 @@ def test_denying_access_without_an_admitted_role(protected_app, jwt_inject_sessi
 
     assert response.status_code == 403
     assert "The user has none of the admitted roles" in response.data.decode()
+
+
+def test_exempt_request_method_for_non_optional_wrapper(protected_app):
+    """Test that OPTION requests get an anonymous session on protected routes."""
+    with protected_app.test_client() as client:
+        response = client.options("/")
+
+    assert response.status_code == 403
 
 
 def test_anonymous_session_with_optional(protected_app):
