@@ -12,7 +12,7 @@ black==22.8.0
     # via moflask (pyproject.toml)
 build==0.8.0
     # via pip-tools
-certifi==2022.6.15.2
+certifi==2022.12.7
     # via requests
 cfgv==3.3.1
     # via pre-commit
