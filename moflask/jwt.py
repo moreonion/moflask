@@ -6,6 +6,7 @@ The JWT’s claims provide a user identifier, an organization and the current ro
 """
 
 import functools
+import itertools
 import uuid
 from typing import Iterable
 
@@ -16,6 +17,11 @@ import werkzeug.exceptions
 get_current_session = flask_jwt_extended.get_current_user
 
 
+def iterate_parents(org: str):
+    """Iterate over all parent organizations."""
+    return itertools.accumulate(org.split(">"), lambda a, b: f"{a}>{b}")
+
+
 class Session:
     """Object that represents a user’s session for a specific organization."""
 
@@ -23,26 +29,33 @@ class Session:
     def from_raw_token(cls, token: dict):
         """Create a session from raw JWT token data."""
         claims = token["user_claims"]
-        return cls(token["identity"], claims["org"], claims["roles"], claims["session_id"])
+        return cls(token["identity"], claims["roles"], claims["session_id"])
 
     @classmethod
     def create_anonymous_session(cls):
         """Create an anonymous session from the request headers."""
         org = flask.request.headers.get("x-ist-org", None)
-        return cls(None, org, [])
+        return cls(None, {org: []} if org else {})
 
     def __init__(
-        self, identity: str, org: str, roles: Iterable[str] = None, custom_uuid: str = None
+        self, identity: str, roles: dict[str, Iterable[str]] = None, custom_uuid: str = None
     ):
         """Create a new session instance."""
         self.identity = identity
-        self.org = org
-        self.roles = set(roles or [])
+        self.roles = {org: frozenset(r) for org, r in roles.items()} if roles else {}
         self.session_id = custom_uuid or str(uuid.uuid4())
 
-    def has_any_role_of(self, roles: Iterable[str]):
-        """Check if the session has any of the given roles."""
-        return any(role in self.roles for role in roles)
+    def has_any_role_of(self, roles: Iterable[str], org: str = None) -> bool:
+        """Check if the session has any of the given roles for the organization.
+
+        Args:
+            roles: The admitted roles.
+            org: Check roles for this organization or its parents. If None is passed the method
+            returns True if the session has any of the roles for any organization.
+        """
+        roles = frozenset(roles)
+        orgs = iterate_parents(org) if org is not None else self.roles.keys()
+        return any(self.roles.get(o, frozenset()) & roles for o in orgs)
 
     def to_token_data(self):
         """Return the session object turned into the token data structure.
@@ -53,8 +66,7 @@ class Session:
             "identity": self.identity,
             "user_claims": {
                 "session_id": self.session_id,
-                "org": self.org,
-                "roles": list(self.roles),
+                "roles": {org: list(roles) for org, roles in self.roles.items()},
             },
         }
 
@@ -106,9 +118,9 @@ def session_to_token(session: Session):
 manager.user_identity_loader(lambda session: None)
 
 
-def check_roles(session: Session, admitted_roles: Iterable[str]):
+def check_roles(session: Session, admitted_roles: Iterable[str], org: str = None):
     """Check whether the session has any of the admitted roles."""
-    if not session.has_any_role_of(admitted_roles):
+    if not session.has_any_role_of(admitted_roles, org):
         raise werkzeug.exceptions.Forbidden("The user has none of the admitted roles.")
 
 
