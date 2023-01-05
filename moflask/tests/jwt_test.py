@@ -37,6 +37,21 @@ class SessionTest:
         session = jwt.Session.from_raw_token(token)
         assert session.to_token_data() == token
 
+    def test_has_any_role_of_inherits_permissions(self):
+        """Test permission inheritance."""
+        roles = {
+            "root": ["root-role"],
+            "root>parent": ["parent-role"],
+            "root>parent>org": ["org-role"],
+            "root>other-parent": ["other-role"],
+            "other-root": ["other-role"],
+        }
+        session = jwt.Session("user-id", roles)
+        assert session.has_any_role_of(["root-role"], "root>parent>org")
+        assert session.has_any_role_of(["parent-role"], "root>parent>org")
+        assert session.has_any_role_of(["org-role"], "root>parent>org")
+        assert not session.has_any_role_of(["other-role"], "root>parent>org")
+
 
 @pytest.fixture(name="protected_app")
 def fixture_protected_app():
