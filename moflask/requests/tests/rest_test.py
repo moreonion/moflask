@@ -12,9 +12,8 @@ from .. import rest
 class ClientTest:
     """Unit-tests for the REST-API client."""
 
-    @staticmethod
     @mock.patch("moflask.requests.sessions.Session.request")
-    def test_base_url_restriction(mock_request):
+    def test_base_url_restriction(self, mock_request):
         """Test that requests to a different base URL are denied.
 
         This is useful for APIs that provide URLs to other objects in their responses. This way
@@ -27,9 +26,8 @@ class ClientTest:
             client.get(url="https://other.example.org")
         assert not mock_request.called
 
-    @staticmethod
     @mock.patch("moflask.requests.sessions.Session.request")
-    def test_returning_data_as_response(mock_request):
+    def test_returning_data_as_response(self, mock_request):
         """Test that Client.request(json_response=True) returns the json data."""
         test_data = {"data": "test"}
         mock_request.return_value = mock.Mock(json=mock.Mock(return_value=test_data))
@@ -38,9 +36,8 @@ class ClientTest:
         data = client.get(json_response=True)
         assert data == {"data": "test"}
 
-    @staticmethod
     @mock.patch("requests.Session.send")
-    def test_auth_middleware(mock_send):
+    def test_auth_middleware(self, mock_send):
         """Test that the a configured auth middleware is called and can manipulate the request."""
 
         def middleware(request: requests.PreparedRequest):

@@ -10,8 +10,7 @@ from .. import jwt
 class SessionTest:
     """Unit-tests for the Session class."""
 
-    @staticmethod
-    def test_init_generates_session_id():
+    def test_init_generates_session_id(self):
         """Test that creating a new session automatically generates a unique session id."""
         session1 = jwt.Session("user-id", {"org": []})
         session2 = jwt.Session("user-id", {"org": []})
@@ -19,16 +18,14 @@ class SessionTest:
         assert session2.session_id
         assert session1.session_id != session2.session_id
 
-    @staticmethod
-    def test_custom_uuid_init():
+    def test_custom_uuid_init(self):
         """Test passing a custom session uuid in the constructor."""
         uuid = "24861915-4617-4dc9-ac0e-2326c7538abc"
         session = jwt.Session("user-id", {"org": []}, uuid)
         data = session.to_token_data()
         assert data["user_claims"]["session_id"] == uuid
 
-    @staticmethod
-    def test_create_session_from_token():
+    def test_create_session_from_token(self):
         """Test creating a session from a token."""
         token = {
             "identity": "7fd8ecf2-c1fa-43fa-8661-3eafaec457b0",
