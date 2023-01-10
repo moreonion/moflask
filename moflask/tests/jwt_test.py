@@ -56,6 +56,24 @@ class SessionTest:
         assert session.has_any_role_of([], "root>parent>org")
         assert not session.has_any_role_of([], "unknown")
 
+    def test_organizations_for_roles(self):
+        """Test that it always returns a minimal set."""
+        roles = {
+            "root": ["root-role"],
+            "root>parent": ["parent-role"],
+            "root>parent>org": ["org-role"],
+            "root>other-parent": ["other-role"],
+            "other-root": ["other-role"],
+        }
+        session = jwt.Session("user-id", roles)
+        assert session.organizations_for_roles(["root-role", "other-role"]) == {
+            "root",
+            "other-root",
+        }
+        assert session.organizations_for_roles(["parent-role", "org-role"]) == {
+            "root>parent",
+        }
+
 
 @pytest.fixture(name="protected_app")
 def fixture_protected_app():

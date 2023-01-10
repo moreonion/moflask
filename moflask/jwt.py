@@ -8,7 +8,7 @@ The JWT’s claims provide a user identifier, an organization and the current ro
 import functools
 import itertools
 import uuid
-from typing import Iterable
+from typing import Iterable, Set
 
 import flask
 import flask_jwt_extended
@@ -59,6 +59,27 @@ class Session:
         roles = frozenset(roles)
         orgs = iterate_parents(org, include_self=True) if org is not None else self.roles.keys()
         return any(not roles or self.roles[o] & roles for o in orgs if o in self.roles)
+
+    def organizations_for_roles(self, admitted_roles: Iterable[str]) -> Set[str]:
+        """Get organizations for which the session has at least one of the given roles.
+
+        This method is usually used to determine which ressources the session should have
+        access to.
+
+        Note that passing an empty list of admitted_roles means that any list of roles for an
+        organization satisfies the condition, even an empty one.
+
+        Returns:
+            A set of organizations for which the session has any of the given roles. If both a
+            parent and a parent>sub organization would be part of the set, then only the parent is
+            returned.
+            This is the minimal set of organizations so that has_any_role_of() would return True
+            for all of them and any of their sub-organizations.
+        """
+        roles = frozenset(admitted_roles)
+        orgs = frozenset(o for o, r in self.roles.items() if not roles or r & roles)
+        cleaned = frozenset(o for o in orgs if not any(p in orgs for p in iterate_parents(o)))
+        return cleaned
 
     def to_token_data(self):
         """Return the session object turned into the token data structure.
