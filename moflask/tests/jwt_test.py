@@ -51,6 +51,10 @@ class SessionTest:
         assert session.has_any_role_of(["parent-role"], "root>parent>org")
         assert session.has_any_role_of(["org-role"], "root>parent>org")
         assert not session.has_any_role_of(["other-role"], "root>parent>org")
+        assert session.has_any_role_of([], "root")
+        assert session.has_any_role_of([], "root>parent")
+        assert session.has_any_role_of([], "root>parent>org")
+        assert not session.has_any_role_of([], "unknown")
 
 
 @pytest.fixture(name="protected_app")

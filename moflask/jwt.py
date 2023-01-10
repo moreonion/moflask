@@ -17,9 +17,12 @@ import werkzeug.exceptions
 get_current_session = flask_jwt_extended.get_current_user
 
 
-def iterate_parents(org: str):
+def iterate_parents(org: str, include_self=False):
     """Iterate over all parent organizations."""
-    return itertools.accumulate(org.split(">"), lambda a, b: f"{a}>{b}")
+    parts = org.split(">")
+    if not include_self:
+        parts.pop()
+    return itertools.accumulate(parts, lambda a, b: f"{a}>{b}")
 
 
 class Session:
@@ -49,13 +52,13 @@ class Session:
         """Check if the session has any of the given roles for the organization.
 
         Args:
-            roles: The admitted roles.
+            roles: The admitted roles. If empty then any list of roles will pass the check.
             org: Check roles for this organization or its parents. If None is passed the method
             returns True if the session has any of the roles for any organization.
         """
         roles = frozenset(roles)
-        orgs = iterate_parents(org) if org is not None else self.roles.keys()
-        return any(self.roles.get(o, frozenset()) & roles for o in orgs)
+        orgs = iterate_parents(org, include_self=True) if org is not None else self.roles.keys()
+        return any(not roles or self.roles[o] & roles for o in orgs if o in self.roles)
 
     def to_token_data(self):
         """Return the session object turned into the token data structure.
