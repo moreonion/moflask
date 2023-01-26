@@ -1,7 +1,5 @@
 """Auth middlewares for the requests library."""
 
-import urllib.parse
-
 import flask
 import requests
 
@@ -27,7 +25,6 @@ class AuthAppClient(rest.Client):
 
     def get_token(self, organization):
         """Get a JWT token for a sub-organization."""
-        organization = urllib.parse.quote_plus(organization)
         response = self.post("token", organization, json=self.api_key)
         return response.json()["token"]
 
