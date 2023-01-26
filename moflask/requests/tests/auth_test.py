@@ -32,6 +32,18 @@ class AuthAppClientTest:
         token = client.get_token("org1")
         assert token == "TOKEN.org1"
 
+    def test_get_token_for_sub_org(self, requests_mock):
+        """Test getting a token."""
+        client = auth.AuthAppClient.from_app()
+        requests_mock.post(rm.ANY, json={"token": "TOKEN.org1"})
+        token = client.get_token("parent>org1")
+        assert token == "TOKEN.org1"
+        assert len(requests_mock.request_history) == 1
+        assert (
+            requests_mock.request_history[0].url
+            == "https://auth.impact-stack.org/v1/token/parent%3Eorg1"
+        )
+
 
 @pytest.mark.usefixtures("app")
 class AuthAppMiddlewareTest:
