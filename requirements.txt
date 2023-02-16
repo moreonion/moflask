@@ -20,7 +20,7 @@ markupsafe==2.1.1
     #   werkzeug
 python-json-logger==2.0.4
     # via moflask (pyproject.toml)
-werkzeug==2.2.2
+werkzeug==2.2.3
     # via flask
 zipp==3.8.1
     # via importlib-metadata
