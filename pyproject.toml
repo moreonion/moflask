@@ -29,7 +29,6 @@ dev = [
   "pytest",
   "pytest-cov",
   "requests-mock",
-  "safety",
 ]
 requests = [
   "requests",
@@ -61,9 +60,6 @@ line-length = 100
 profile = "black"
 line_length = 100
 combine_as_imports = true
-
-[tool.pylint.messages_control]
-disable = "C0330, C0326"
 
 [tool.pylint.format]
 max-line-length = "100"

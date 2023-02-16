@@ -8,11 +8,6 @@ repos:
     -   id: check-added-large-files
 -   repo: local
     hooks:
-    -   id: safety
-        name: safety
-        entry: safety check -r
-        language: system
-        files: requirements.txt
     -   id: isort
         name: isort
         entry: isort
