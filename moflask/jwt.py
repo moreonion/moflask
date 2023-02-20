@@ -25,6 +25,15 @@ def iterate_parents(org: str, include_self=False):
     return itertools.accumulate(parts, lambda a, b: f"{a}>{b}")
 
 
+def ancestors(orgs: Iterable[str]) -> Set[str]:
+    """Get all the ancestors of all the given organizations.
+
+    Returns:
+        A set of all organizations which are ancestors of at least one of the passed organizations.
+    """
+    return frozenset(itertools.chain.from_iterable(iterate_parents(org) for org in orgs))
+
+
 class Session:
     """Object that represents a user’s session for a specific organization."""
 
