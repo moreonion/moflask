@@ -1,4 +1,4 @@
-.PHONY: help bootstrap test safety requirements
+.PHONY: help bootstrap lint test requirements
 
 VENV?=.venv
 PYTHON?=python3
@@ -9,7 +9,7 @@ help:
 	@echo
 	@echo "make development     -- setup development environment"
 	@echo "make test            -- run full test suite"
-	@echo "make safety          -- run safety check on packages"
+	@echo "make lint            -- run all linters on the code base"
 	@echo
 	@echo "make requirements    -- only compile the requirements*.txt files"
 	@echo "make .venv           -- bootstrap the virtualenv."
@@ -20,16 +20,13 @@ install: $(VENV)/.pip-installed-production
 development: $(VENV)/.pip-installed-development .git/hooks/pre-commit
 	$(VENV)/bin/pip install -e .
 
-test:
-	$(VENV)/bin/pytest --cov tests
+lint: development
+	$(VENV)/bin/pre-commit run -a
 
-safety: requirements.txt
-	$(VENV)/bin/safety check -r $<
+test: development
+	$(VENV)/bin/pytest
 
 requirements: requirements.txt requirements-dev.txt
-
-%.txt: %.in
-	$(VENV)/bin/pip-compile -v --output-file $@ $<
 
 requirements.txt: pyproject.toml
 	$(VENV)/bin/pip-compile -v --output-file=$@ $<
@@ -42,7 +39,7 @@ requirements-dev.txt: pyproject.toml
 
 # Create this directory as a symbolic link to an existing virtualenv, if you want to use that.
 $(VENV):
-	$(PYTHON) -m venv $(VENV)
+	$(PYTHON) -m venv --system-site-packages $(VENV)
 	$(VENV)/bin/pip install pip-tools wheel
 	touch $(VENV)
 

@@ -46,3 +46,7 @@ class Client:
         response = self._session.request(method, url, **kwargs)
         response.raise_for_status()
         return response.json() if json_response else response
+
+    def __del__(self):
+        """Close the session."""
+        self._session.close()

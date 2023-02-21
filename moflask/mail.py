@@ -1,10 +1,7 @@
 import smtplib
 
 from flask import current_app
-from flask_mail import Connection as _Connection
-from flask_mail import Mail as _Mail
-from flask_mail import Message
-from flask_mail import _Mail as __Mail
+from flask_mail import Connection as _Connection, Mail as _Mail, Message, _Mail as __Mail
 
 """
 Wrappers around flask_mail to support a custom MAIL FROM and local_hostname.
@@ -31,7 +28,7 @@ class Connection(_Connection):
 
 class MailState(__Mail):
     def send(self, msg):
-        """ Set custom headers and call parent. """
+        """Set custom headers and call parent."""
         if self.reply_to:
             msg.reply_to = self.reply_to
         with self.connect() as connection:
