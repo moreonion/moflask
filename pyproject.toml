@@ -1,6 +1,6 @@
 [project]
+dynamic = ["version"]
 name = "moflask"
-version = "1.3.2"
 description = "Re-usable flask utilities."
 authors = [
   {name = "Roman Zimmermann", email="roman@more-onion.com"},
@@ -42,13 +42,16 @@ moflask = "moflask.pytest_plugin"
 
 [build-system]
 requires = [
-  "setuptools>=42",
+  "setuptools>=45",
+  "setuptools-scm[toml]>=6.2",
   "wheel",
 ]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = ["moflask"]
+
+[tool.setuptools_scm]
 
 [project.urls]
 repository = "https://github.com/moreonion/moflask"
