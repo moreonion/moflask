@@ -24,8 +24,7 @@ def fixture_app():
 class AuthAppClientTest:
     """Test the auth-app client."""
 
-    @staticmethod
-    def test_get_token(requests_mock):
+    def test_get_token(self, requests_mock):
         """Test getting a token."""
         client = auth.AuthAppClient.from_app()
         requests_mock.post(rm.ANY, json={"token": "TOKEN.org1"})
@@ -49,14 +48,12 @@ class AuthAppClientTest:
 class AuthAppMiddlewareTest:
     """Test the auth-app middleware."""
 
-    @staticmethod
-    def test_default_client_from_app_config():
+    def test_default_client_from_app_config(self):
         """Test that instantiating without a client uses client configured from the app config."""
         middleware = auth.AuthAppMiddleware("org1")
         assert isinstance(middleware.client, auth.AuthAppClient)
 
-    @staticmethod
-    def test_call_adds_header():
+    def test_call_adds_header(self):
         """Test that the JWT token is added to the header."""
         client = mock.Mock(spec=auth.AuthAppClient)
         client.get_token.return_value = "TOKEN.org1"
