@@ -9,12 +9,14 @@ from . import rest
 class AuthAppClient(rest.Client):
     """A REST client for retrieving JWTs from the auth-app."""
 
+    AUTH_API_VERSION = "v1"
+
     @classmethod
     def from_app(cls, app=None):
         """Create a new instance by reading the config from the Flask app config."""
         app = app or flask.current_app
         return cls(
-            app.config["IMPACT_STACK_AUTH_APP_URL"],
+            app.config["IMPACT_STACK_AUTH_APP_URL"] + "/" + cls.AUTH_API_VERSION,
             app.config["IMPACT_STACK_AUTH_APP_KEY"],
         )
 
@@ -23,9 +25,9 @@ class AuthAppClient(rest.Client):
         super().__init__(base_url)
         self.api_key = api_key
 
-    def get_token(self, organization):
-        """Get a JWT token for a sub-organization."""
-        response = self.post("token", organization, json=self.api_key)
+    def get_token(self):
+        """Use the API token to get a new JWT."""
+        response = self.post("token", json=self.api_key)
         return response.json()["token"]
 
 
@@ -35,16 +37,15 @@ class AuthAppMiddleware:
     The middleware transparently requests an API-token from the auth-app on-demand.
     """
 
-    def __init__(self, organization, client=None):
+    # pylint: disable=too-few-public-methods
+    # For now the middleware is very simple, but in the future it should also take care of caching
+    # the JWT and renew if needed.
+
+    def __init__(self, client=None):
         """Create new auth-app requests auth middleware."""
         self.client = client or AuthAppClient.from_app()
-        self.organization = organization
-
-    def get_token(self):
-        """Get a JWT token from the auth-app."""
-        return self.client.get_token(self.organization)
 
     def __call__(self, request: requests.PreparedRequest):
         """Add the JWT token to the request."""
-        request.headers["Authorization"] = "Bearer " + self.get_token()
+        request.headers["Authorization"] = "Bearer " + self.client.get_token()
         return request
