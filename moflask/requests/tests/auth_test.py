@@ -14,8 +14,8 @@ from .. import auth
 def fixture_app():
     """Define a test Flask app."""
     app = flask.Flask("test-app")
-    app.config["IMPACT_STACK_AUTH_APP_URL"] = "https://auth.impact-stack.org"
-    app.config["IMPACT_STACK_AUTH_APP_KEY"] = "api-key"
+    app.config["IMPACT_STACK_API_URL"] = "https://impact-stack.net/api"
+    app.config["IMPACT_STACK_API_KEY"] = "api-key"
     with app.app_context():
         yield app
 
@@ -31,7 +31,7 @@ class AuthAppClientTest:
         token = client.get_token()
         assert token == "TOKEN.org1"
         assert len(requests_mock.request_history) == 1
-        assert requests_mock.request_history[0].url == "https://auth.impact-stack.org/v1/token"
+        assert requests_mock.request_history[0].url == "https://impact-stack.net/api/auth/v1/token"
         assert requests_mock.request_history[0].json() == "api-key"
 
 

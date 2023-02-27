@@ -16,8 +16,8 @@ class AuthAppClient(rest.Client):
         """Create a new instance by reading the config from the Flask app config."""
         app = app or flask.current_app
         return cls(
-            app.config["IMPACT_STACK_AUTH_APP_URL"] + "/" + cls.AUTH_API_VERSION,
-            app.config["IMPACT_STACK_AUTH_APP_KEY"],
+            app.config["IMPACT_STACK_API_URL"] + "/auth/" + cls.AUTH_API_VERSION,
+            app.config["IMPACT_STACK_API_KEY"],
         )
 
     def __init__(self, base_url, api_key):
