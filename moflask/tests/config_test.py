@@ -16,6 +16,7 @@ def test_default_config():
     """Test app default config."""
     app = BaseApp("moflask.tests.test_app1")
     assert app.config.get("A") == "My default setting"
+    assert app.config.get("B") == "base only"
 
 
 def test_config_dict():
@@ -23,6 +24,7 @@ def test_config_dict():
     config = {"A": "My setting"}
     app = BaseApp("moflask.tests.test_app1", config=config)
     assert app.config.get("A") == "My setting"
+    assert app.config.get("B") == "base only"
 
 
 def test_config_object():
@@ -36,14 +38,26 @@ def test_config_object():
 
     app = BaseApp("moflask.tests.test_app1", config=Config)
     assert app.config.get("A") == "My setting"
+    assert app.config.get("B") == "base only"
+
+
+@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/independent.py"})
+def test_independent_config():
+    """Test loading a config that doesn’t inherit from the base."""
+    app = BaseApp("moflask.tests.test_app1")
+    assert app.config.get("A") == "Independent settings"
+    assert "B" not in app.config
 
 
 @mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
 def test_config_override():
     """Test local config overrides app config."""
+    app = BaseApp("moflask.tests.test_app1")
+    assert app.config.get("A") == "My override setting"
+
     config = {"A": "My setting"}
     app = BaseApp("moflask.tests.test_app1", config=config)
-    assert app.config.get("A") == "My override setting"
+    assert app.config.get("A") == "My setting"
 
 
 def test_testing_config():
@@ -56,6 +70,9 @@ def test_testing_config():
 @mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
 def test_testing_config_override():
     """Test local test config overrides app config."""
+    app = BaseApp("moflask.tests.test_app1", testing=True)
+    assert app.config.get("A") == "My override test setting"
+
     config = {"A": "My setting", "TEST_A": "My test setting"}
     app = BaseApp("moflask.tests.test_app1", config=config, testing=True)
-    assert app.config.get("A") == "My override test setting"
+    assert app.config.get("A") == "My test setting"

@@ -1,5 +1,7 @@
 """Basic Flask App with a few enhancements."""
 
+import os
+
 from flask import Flask
 
 from moflask.logging import init_logger
@@ -20,25 +22,20 @@ class BaseApp(Flask):
         if not self.sanity_check():
             raise RuntimeError("Sanity checks failed. Aborting!")
 
-    def load_config_defaults(self):
-        """Load app default config from "config_defaults.py" if available."""
-        self.config.from_pyfile("settings/base.py", silent=True)
-
     def load_config(self, config=None, testing=False):
         """Load app config.
 
-        1. default config provided by the app
+        1. config file set in FLASK_SETTINGS environment variable (defaults to settings/base.py)
         2. config object or dict passed as keyword argument
-        3. config file set in FLASK_SETTINGS environment variable
-        4. in testing, prefer "TEST_" prefixed settings if available
+        3. in testing, prefer "TEST_" prefixed settings if available
         """
         self.config["TESTING"] = testing
-        self.load_config_defaults()
+        settings_file = os.environ.get("FLASK_SETTINGS", "settings/base.py")
+        self.config.from_pyfile(settings_file, silent=True)
         if isinstance(config, dict):
             self.config.update(config)
         elif config:
             self.config.from_object(config)
-        self.config.from_envvar("FLASK_SETTINGS", silent=True)
         if self.testing:
             self.config.update(self.config.get_namespace("TEST_", lowercase=False))
 
