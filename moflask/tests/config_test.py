@@ -60,19 +60,9 @@ def test_config_override():
     assert app.config.get("A") == "My setting"
 
 
-def test_testing_config():
-    """Test testing config is used."""
-    app = BaseApp("moflask.tests.test_app1", testing=True)
-    assert app.testing is True
-    assert app.config.get("A") == "My default test setting"
-
-
+@mock.patch.dict(os.environ, {"FLASK_A": "env config"})
 @mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
-def test_testing_config_override():
-    """Test local test config overrides app config."""
-    app = BaseApp("moflask.tests.test_app1", testing=True)
-    assert app.config.get("A") == "My override test setting"
-
-    config = {"A": "My setting", "TEST_A": "My test setting"}
-    app = BaseApp("moflask.tests.test_app1", config=config, testing=True)
-    assert app.config.get("A") == "My test setting"
+def test_envvar_override_config():
+    """Test testing config is used."""
+    app = BaseApp("moflask.tests.test_app1")
+    assert app.config.get("A") == "env config"

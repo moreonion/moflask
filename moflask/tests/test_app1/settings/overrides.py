@@ -4,4 +4,3 @@
 from moflask.tests.test_app1.settings.base import *
 
 A = "My override setting"
-TEST_A = "My override test setting"

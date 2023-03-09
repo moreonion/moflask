@@ -13,31 +13,28 @@ class BaseApp(Flask):
     def __init__(self, *args, **kwargs):
         """Create a new app object."""
         config = kwargs.pop("config", {})
-        testing = kwargs.pop("testing", False)
         super().__init__(*args, **kwargs)
         self.sentry = None
-        self.load_config(config, testing)
+        self.load_config(config)
         self.init_defaults()
 
         if not self.sanity_check():
             raise RuntimeError("Sanity checks failed. Aborting!")
 
-    def load_config(self, config=None, testing=False):
+    def load_config(self, config=None):
         """Load app config.
 
         1. config file set in FLASK_SETTINGS environment variable (defaults to settings/base.py)
         2. config object or dict passed as keyword argument
-        3. in testing, prefer "TEST_" prefixed settings if available
+        3. prefer "FLASK_" prefixed environment variables
         """
-        self.config["TESTING"] = testing
         settings_file = os.environ.get("FLASK_SETTINGS", "settings/base.py")
         self.config.from_pyfile(settings_file, silent=True)
         if isinstance(config, dict):
             self.config.update(config)
         elif config:
             self.config.from_object(config)
-        if self.testing:
-            self.config.update(self.config.get_namespace("TEST_", lowercase=False))
+        self.config.from_prefixed_env()
 
     def init_defaults(self):
         """Initialize default app extensions."""
