@@ -38,7 +38,7 @@ def test_config_object():
     assert app.config.get("A") == "My setting"
 
 
-@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "config_overrides.py"})
+@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
 def test_config_override():
     """Test local config overrides app config."""
     config = {"A": "My setting"}
@@ -53,7 +53,7 @@ def test_testing_config():
     assert app.config.get("A") == "My default test setting"
 
 
-@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "config_overrides.py"})
+@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
 def test_testing_config_override():
     """Test local test config overrides app config."""
     config = {"A": "My setting", "TEST_A": "My test setting"}

@@ -22,7 +22,7 @@ class BaseApp(Flask):
 
     def load_config_defaults(self):
         """Load app default config from "config_defaults.py" if available."""
-        self.config.from_pyfile("config_defaults.py", silent=True)
+        self.config.from_pyfile("settings/base.py", silent=True)
 
     def load_config(self, config=None, testing=False):
         """Load app config.
