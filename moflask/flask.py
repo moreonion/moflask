@@ -43,7 +43,7 @@ class BaseApp(Flask):
 
     def init_sentry(self):
         """Initialize Sentry."""
-        if self.config.get("SENTRY_DSN", False):
+        if any(key in self.config for key in ["SENTRY_DSN", "SENTRY_CONFIG"]):
             # pylint: disable=import-outside-toplevel,import-error
             from raven.contrib.flask import Sentry
 
