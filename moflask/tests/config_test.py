@@ -66,3 +66,17 @@ def test_envvar_override_config():
     """Test testing config is used."""
     app = BaseApp("moflask.tests.test_app1")
     assert app.config.get("A") == "env config"
+
+
+@mock.patch.dict(os.environ, {"FLASK_A": "FLASK config"})
+@mock.patch.dict(os.environ, {"FOO_A": "FOO config"})
+@mock.patch.dict(os.environ, {"FLASK_SETTINGS": "settings/overrides.py"})
+def test_envvar_override_with_custom_prefix():
+    """Test testing config is used."""
+
+    class _App(BaseApp):
+        def load_config(self, config=None, env_prefix="FOO"):
+            super().load_config(config, env_prefix)
+
+    app = _App("moflask.tests.test_app1")
+    assert app.config.get("A") == "FOO config"

@@ -21,7 +21,7 @@ class BaseApp(Flask):
         if not self.sanity_check():
             raise RuntimeError("Sanity checks failed. Aborting!")
 
-    def load_config(self, config=None):
+    def load_config(self, config=None, env_prefix="FLASK"):
         """Load app config.
 
         1. config file set in FLASK_SETTINGS environment variable (defaults to settings/base.py)
@@ -34,7 +34,7 @@ class BaseApp(Flask):
             self.config.update(config)
         elif config:
             self.config.from_object(config)
-        self.config.from_prefixed_env()
+        self.config.from_prefixed_env(prefix=env_prefix)
 
     def init_defaults(self):
         """Initialize default app extensions."""
