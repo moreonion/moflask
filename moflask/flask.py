@@ -43,11 +43,13 @@ class BaseApp(Flask):
 
     def init_sentry(self):
         """Initialize Sentry."""
-        if any(key in self.config for key in ["SENTRY_DSN", "SENTRY_CONFIG"]):
-            # pylint: disable=import-outside-toplevel,import-error
-            from raven.contrib.flask import Sentry
+        # pylint: disable=import-outside-toplevel
+        if config := self.config.get("SENTRY_CONFIG"):
+            import sentry_sdk
+            from sentry_sdk.integrations.flask import FlaskIntegration
 
-            self.sentry = Sentry(self)
+            defaults = {"integrations": [FlaskIntegration()]}
+            self.sentry = sentry_sdk.Client(**{**defaults, **config})
 
     @staticmethod
     def sanity_check():
