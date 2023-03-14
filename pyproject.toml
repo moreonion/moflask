@@ -29,6 +29,7 @@ dev = [
   "pytest",
   "pytest-cov",
   "requests-mock",
+  "sentry-sdk[flask]",
 ]
 requests = [
   "requests",
