@@ -18,6 +18,7 @@ def test_ancestors():
     }
     assert jwt.ancestors(["root>parent", "root>parent>org"]) == {"root", "root>parent"}
 
+
 class SessionTest:
     """Unit-tests for the Session class."""
 
