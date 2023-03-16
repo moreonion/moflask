@@ -1,9 +1,13 @@
+"""Implement WSGI middlewares for Flask apps."""
+
 from ipaddress import ip_address
 
-_split = lambda x: x.split(",") if x else []
+
+def _split(string):
+    return string.split(",") if string else []
 
 
-class ProxyFix(object):
+class ProxyFix:
     """This is a slightly modified version of werkzeug's ProxyFix.
 
     Instead of using a fixed number of proxies it uses a list of trusted IP
@@ -17,18 +21,21 @@ class ProxyFix(object):
     the WSGI environment as `werkzeug.proxy_fix.orig_remote_addr` and
     `werkzeug.proxy_fix.orig_http_host`.
 
-    :param app: the WSGI application
-    :param num_proxies: the number of proxy servers in front of the app.
+    Args:
+        app: The Flask application to wrap.
     """
 
     def __init__(self, app):
+        """Wrap a Flask app and read variables from its config."""
         self.wsgi = app.wsgi_app
         proxies = app.config.get("PROXYFIX_TRUSTED", ["127.0.0.1"])
         self.trusted = frozenset(ip_address(p.strip()) for p in proxies)
 
     def get_remote_addr(self, forwarded_for, remote):
-        """Selects the new remote addr from the given list of ips in
-        X-Forwarded-For. It picks the "rightmost" untrusted IP address.
+        """Select the first “untrusted” remote addr.
+
+        Values to X-Forwarded-For are expected to be appended so the inner proxy layers are to the
+        right. The innermost untrusted IP is returned.
         """
         for ip_str in reversed([remote] + forwarded_for):
             ip_str = ip_str.strip()
@@ -40,6 +47,7 @@ class ProxyFix(object):
         return remote
 
     def update_environ(self, environ):
+        """Update the WSGI environment according to the headers."""
         env = environ.get
         remote_addr = env("REMOTE_ADDR")
         if not remote_addr:
@@ -73,5 +81,6 @@ class ProxyFix(object):
             environ["REMOTE_ADDR"] = remote_addr
 
     def __call__(self, environ, start_response):
+        """Change the WSGI environment and call the wrapped app."""
         self.update_environ(environ)
         return self.wsgi(environ, start_response)

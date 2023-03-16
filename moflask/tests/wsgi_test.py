@@ -1,28 +1,35 @@
+"""Test the WSGI middlewares."""
+
 from copy import copy
-from unittest import TestCase
+from unittest import mock
 
-from ..wsgi import ProxyFix
+from moflask import wsgi
 
 
-class ProxyFixTest(TestCase):
-    def app_stub(self, trusted):
-        class Object(object):
-            wsgi_app = None
+def create_app_stub(trusted):
+    """Create a stub Flask app."""
+    app = mock.Mock()
+    app.wsgi_app = None
+    app.config = {}
+    app.config["PROXYFIX_TRUSTED"] = trusted
+    return app
 
-        app = Object()
-        app.config = {}
-        app.config["PROXYFIX_TRUSTED"] = trusted
-        return app
 
-    def _copy_env(self, env):
-        e = copy(env)
-        e["werkzeug.proxy_fix.orig_http_host"] = env["HTTP_HOST"]
-        e["werkzeug.proxy_fix.orig_remote_addr"] = env["REMOTE_ADDR"]
-        e["werkzeug.proxy_fix.orig_wsgi_url_scheme"] = env["wsgi.url_scheme"]
-        return e
+def copy_env(env):
+    """Create a copy of a WSGI environment with the original values backed up."""
+    new_env = copy(env)
+    new_env["werkzeug.proxy_fix.orig_http_host"] = env["HTTP_HOST"]
+    new_env["werkzeug.proxy_fix.orig_remote_addr"] = env["REMOTE_ADDR"]
+    new_env["werkzeug.proxy_fix.orig_wsgi_url_scheme"] = env["wsgi.url_scheme"]
+    return new_env
+
+
+class ProxyFixTest:
+    """Test the proxy fix middleware."""
 
     def test_one_forwarded_for_layer(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1"]))
+        """Test a single trusted reverse proxy."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1"]))
         env = {
             "REMOTE_ADDR": "127.0.0.1",
             "HTTP_HOST": "example.com",
@@ -30,26 +37,29 @@ class ProxyFixTest(TestCase):
             "HTTP_X_FORWARDED_FOR": "8.8.8.8",
             "HTTP_X_FORWARDED_PROTO": "https",
         }
-        e = self._copy_env(env)
-        e["REMOTE_ADDR"] = "8.8.8.8"
-        e["wsgi.url_scheme"] = "https"
+        expected_env = copy_env(env)
+        expected_env["REMOTE_ADDR"] = "8.8.8.8"
+        expected_env["wsgi.url_scheme"] = "https"
         fix.update_environ(env)
-        self.assertEqual(e, env)
+        assert env == expected_env
 
     def test_multiple_trusted_multiple_untrusted(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1", "10.0.0.1"]))
-        rm = fix.get_remote_addr(
+        """Test getting the remote IP for multiple proxy layers."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1", "10.0.0.1"]))
+        remote_address = fix.get_remote_addr(
             ["8.8.8.8", "10.0.0.1", "127.0.0.1"],
             "1.1.1.1",
         )
-        self.assertEqual("8.8.8.8", rm)
+        assert remote_address == "8.8.8.8"
 
     def test_all_trusted(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1"]))
-        self.assertEqual("127.0.0.1", fix.get_remote_addr([], "127.0.0.1"))
+        """Test getting the remote IP with only trusted IPs."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1"]))
+        assert fix.get_remote_addr([], "127.0.0.1") == "127.0.0.1"
 
     def test_no_trusted_layer(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1"]))
+        """Test request from an untrusted remote."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1"]))
         env = {
             "REMOTE_ADDR": "8.8.8.8",
             "HTTP_HOST": "example.com",
@@ -58,12 +68,13 @@ class ProxyFixTest(TestCase):
             "HTTP_X_FORWARDED_HOST": "untrusted.com",
             "HTTP_X_FORWARDED_PROTO": "https",
         }
-        e = self._copy_env(env)
+        expected_env = copy_env(env)
         fix.update_environ(env)
-        self.assertEqual(e, env)
+        assert env == expected_env
 
     def test_new_ip_equals_old_ip(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1"]))
+        """Test a local request with HTTPS."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1"]))
         env = {
             "REMOTE_ADDR": "127.0.0.1",
             "HTTP_HOST": "example.com",
@@ -71,14 +82,15 @@ class ProxyFixTest(TestCase):
             "HTTP_X_FORWARDED_FOR": "127.0.0.1",
             "HTTP_X_FORWARDED_PROTO": "https",
         }
-        e = self._copy_env(env)
-        e["wsgi.url_scheme"] = "https"
+        expected_env = copy_env(env)
+        expected_env["wsgi.url_scheme"] = "https"
         fix.update_environ(env)
-        self.assertEqual(e, env)
+        assert env == expected_env
 
     def test_no_proxy_works_transparently(self):
-        fix = ProxyFix(self.app_stub(["127.0.0.1"]))
+        """Test updating the environment without any reverse proxy."""
+        fix = wsgi.ProxyFix(create_app_stub(["127.0.0.1"]))
         env = {"REMOTE_ADDR": "127.0.0.1", "HTTP_HOST": "example.com", "wsgi.url_scheme": "http"}
-        e = self._copy_env(env)
+        expected_env = copy_env(env)
         fix.update_environ(env)
-        self.assertEqual(e, env)
+        assert env == expected_env
