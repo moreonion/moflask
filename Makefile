@@ -21,6 +21,7 @@ development: $(VENV)/.pip-installed-development .git/hooks/pre-commit
 	$(VENV)/bin/pip install -e .
 
 lint: development
+	$(VENV)/bin/python -c "import sys; print(sys.path); import os; print(os.environ)"
 	$(VENV)/bin/pre-commit run -a
 
 test: development

@@ -20,17 +20,20 @@ jobs:
     steps:
         # Checkout the latest code from the repo
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         # Setup which version of Python to use
       - name: Set Up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
         # Display the Python version being used
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-        # Install the package using the setup.py
+        # Install the package.
       - name: Install package
-        run: make development
+        run: pip install -r requirements-dev.txt; pip install -e .
       - name: Run tests
-        run: make test
+        run: pytest
+      - name: Run linters
+        uses: pre-commit/action@v3.0.0
