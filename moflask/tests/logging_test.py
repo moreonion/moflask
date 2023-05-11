@@ -12,29 +12,29 @@ from moflask import logging
 
 def test_configuring_default_logger():
     """Test Default formatter is used."""
-    app = Flask("moflask")
+    app = Flask("moflask1")
 
     logging.init_logger(app)
 
-    assert app.logger.name == "moflask"
+    assert app.logger.name == "moflask1"
     assert isinstance(app.logger.handlers[-1].formatter, _logging.Formatter)
 
 
 def test_configuring_file_logger():
     """Test JsonFormatter is used for log file."""
-    app = Flask("moflask")
+    app = Flask("moflask2")
     app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
 
     logging.init_logger(app)
 
-    assert app.logger.name == "moflask"
+    assert app.logger.name == "moflask2"
     assert isinstance(app.logger.handlers[-1].formatter, JsonFormatter)
     assert app.logger.handlers[-1].baseFilename == "/tmp/moflask.logging_test.log"
 
 
 def test_handlers_are_added_once():
     """Test that existing handlers are not added again."""
-    app = Flask("moflask")
+    app = Flask("moflask3")
     app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
 
     logging.init_logger(app)
@@ -53,7 +53,7 @@ def test_adding_extra_filters():
         record.test = "test"
         return True
 
-    app = Flask("moflask")
+    app = Flask("moflask4")
     app.config["LOG_FILE"] = "/tmp/moflask.logging_test.log"
 
     logging.init_logger(app, [extra_filter])
