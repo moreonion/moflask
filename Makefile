@@ -30,10 +30,10 @@ test: development
 requirements: requirements.txt requirements-dev.txt
 
 requirements.txt: pyproject.toml
-	$(VENV)/bin/pip-compile -v --output-file=$@ $<
+	$(VENV)/bin/pip-compile -v --resolver=backtracking --output-file=$@ $<
 
 requirements-dev.txt: pyproject.toml
-	$(VENV)/bin/pip-compile -v --output-file=$@ --extra=dev $<
+	$(VENV)/bin/pip-compile -v --resolver=backtracking --output-file=$@ --extra=dev $<
 
 # Actual files/directories
 ################################################################################
