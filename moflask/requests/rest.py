@@ -34,14 +34,14 @@ class Client:
         - A path passed as kwarg.
         - Path parts that will be escaped and joined passed as positional arguments.
         """
-        if not path and path_parts:
+        if path is None:
             path = "/".join(urllib.parse.quote_plus(part) for part in path_parts)
         if url:
             if not url.startswith(self._base_url):
                 raise requests.exceptions.URLRequired(
                     f"This client only sends requests to {self._base_url}"
                 )
-        elif path:
+        else:
             url = self._base_url + path
         response = self._session.request(method, url, **kwargs)
         response.raise_for_status()
