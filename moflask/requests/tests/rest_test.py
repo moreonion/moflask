@@ -13,6 +13,42 @@ class ClientTest:
     """Unit-tests for the REST-API client."""
 
     @mock.patch("moflask.requests.sessions.Session.request")
+    def test_request_to_root_url(self, mock_request):
+        """Test making a request to the root URL of the API."""
+        mock_request.return_value = mock.Mock(json=mock.Mock(return_value={"status": "OK"}))
+        client = rest.Client("https://base.example.org")
+        assert client.get().json() == {"status": "OK"}
+        assert mock_request.mock_calls == [
+            mock.call("GET", "https://base.example.org/"),
+            mock.call().raise_for_status(),
+            mock.call().json(),
+        ]
+
+    @mock.patch("moflask.requests.sessions.Session.request")
+    def test_request_using_path_parts(self, mock_request):
+        """Test making a request using path parts."""
+        mock_request.return_value = mock.Mock(json=mock.Mock(return_value={"status": "OK"}))
+        client = rest.Client("https://base.example.org")
+        assert client.get("part", "escaped?/=").json() == {"status": "OK"}
+        assert mock_request.mock_calls == [
+            mock.call("GET", "https://base.example.org/part/escaped%3F%2F%3D"),
+            mock.call().raise_for_status(),
+            mock.call().json(),
+        ]
+
+    @mock.patch("moflask.requests.sessions.Session.request")
+    def test_request_using_path(self, mock_request):
+        """Test making a request by passing the path."""
+        mock_request.return_value = mock.Mock(json=mock.Mock(return_value={"status": "OK"}))
+        client = rest.Client("https://base.example.org")
+        assert client.get(path="test=?path").json() == {"status": "OK"}
+        assert mock_request.mock_calls == [
+            mock.call("GET", "https://base.example.org/test=?path"),
+            mock.call().raise_for_status(),
+            mock.call().json(),
+        ]
+
+    @mock.patch("moflask.requests.sessions.Session.request")
     def test_base_url_restriction(self, mock_request):
         """Test that requests to a different base URL are denied.
 
