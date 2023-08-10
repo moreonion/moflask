@@ -22,7 +22,7 @@ dev = [
   "flask-jwt-extended",
   "flask-login",
   "isort",
-  "pip-tools",
+  "pip-tools>=7.0",
   "pre-commit",
   "pydocstyle",
   "pylint",
