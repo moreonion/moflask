@@ -49,7 +49,7 @@ class BaseApp(Flask):
             from sentry_sdk.integrations.flask import FlaskIntegration
 
             defaults = {"integrations": [FlaskIntegration()]}
-            self.sentry = sentry_sdk.Client(**{**defaults, **config})
+            self.sentry = sentry_sdk.init(**{**defaults, **config})
 
     @staticmethod
     def sanity_check():
