@@ -1,10 +1,13 @@
 """Basic Flask App with a few enhancements."""
 
 import os
+from typing import Any, Callable, Optional
 
 from flask import Flask
 
 from moflask.logging import init_logger
+
+ConfigGetter = Callable[[str, Optional[Any]], Any]
 
 
 class BaseApp(Flask):
@@ -35,6 +38,17 @@ class BaseApp(Flask):
         elif config:
             self.config.from_object(config)
         self.config.from_prefixed_env(prefix=env_prefix)
+
+    @property
+    def config_getter(self) -> ConfigGetter:
+        """Return a method for reading config that acts similar to getattr."""
+        no_default = object()
+        config = self.config
+
+        def config_getter(key, default=no_default):
+            return config[key] if default == no_default else config.get(key, default)
+
+        return config_getter
 
     def init_defaults(self):
         """Initialize default app extensions."""
