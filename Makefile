@@ -30,10 +30,7 @@ lint: development
 test: development
 	$(VENV)/bin/pytest
 
-requirements: requirements.txt requirements-dev.txt
-
-requirements.txt: pyproject.toml $(PIP_SYNC)
-	$(VENV)/bin/pip-compile -v --output-file=$@ $<
+requirements: requirements-dev.txt
 
 requirements-dev.txt: pyproject.toml $(PIP_SYNC)
 	$(VENV)/bin/pip-compile -v --output-file=$@ --extra=dev $<
