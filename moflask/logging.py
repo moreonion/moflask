@@ -25,12 +25,6 @@ import os
 import flask
 from pythonjsonlogger import jsonlogger
 
-# Ensure the `current_user` variable is set for the filter below.
-try:
-    from flask_login import current_user
-except ImportError:
-    current_user = None
-
 
 def init_logger(app, extra_filters=None):
     """Configure the app’s logger with custom filters and handlers."""
@@ -57,16 +51,6 @@ def add_app_context_data(record):
     """Add app data from the context to the log record if available."""
     if flask.has_app_context():
         record.app = flask.current_app.name
-    return True
-
-
-def add_user_data(record):
-    """Add user data to the log record if available."""
-    if current_user:
-        if current_user.is_authenticated:
-            record.user = repr(current_user)
-        else:
-            record.user = "<AnonymousUser>"
     return True
 
 
@@ -166,8 +150,6 @@ def get_json_file_handler(config, logger=None, filters=None):
         add_request_data,
         add_response_data,
     ]
-    if current_user:
-        default_filters.append(add_user_data)
     for filter_ in default_filters + (filters or []):
         handler.addFilter(filter_)
     return handler

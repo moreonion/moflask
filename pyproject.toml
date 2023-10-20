@@ -20,7 +20,6 @@ dependencies = [
 dev = [
   "black",
   "flask-jwt-extended",
-  "flask-login",
   "isort",
   "pre-commit",
   "pydocstyle",
