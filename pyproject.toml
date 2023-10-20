@@ -29,9 +29,6 @@ dev = [
   "requests-mock",
   "sentry-sdk[flask]",
 ]
-requests = [
-  "requests",
-]
 jwt = [
   "flask-jwt-extended>=4.4.4,<5",
 ]
