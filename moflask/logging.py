@@ -17,6 +17,7 @@ Settings options:
 
 """
 
+import datetime
 import json
 import logging
 import logging.handlers
@@ -24,6 +25,31 @@ import os
 
 import flask
 from pythonjsonlogger import jsonlogger
+
+
+class ISOTimeFormatterMixin:  # pylint: disable=too-few-public-methods
+    """Mixin for formatting the logging time as ISO8601.
+
+    Formats with TZ offset and milliseconds.
+    This is not achievable with the default formatter options alone.
+
+    Caveats:
+    - The datefmt option is hardcoded.
+    - Formatter.converter is ignored, localtime is used
+    """
+
+    def formatTime(self, record, *_args, **_kwargs):  # pylint: disable=invalid-name
+        """Format time as ISO8601 timestamps with milliseconds."""
+        created = datetime.datetime.fromtimestamp(record.created)
+        return created.astimezone().isoformat(timespec="milliseconds")
+
+
+class Formatter(ISOTimeFormatterMixin, logging.Formatter):
+    """Extended logging formatter."""
+
+
+class JsonFormatter(ISOTimeFormatterMixin, jsonlogger.JsonFormatter):
+    """Extended JSON logging formatter."""
 
 
 def init_logger(app, extra_filters=None):
@@ -93,7 +119,7 @@ def get_formatter(config):
     """Get a string formatter."""
     fmt = config.get("LOG_FORMAT", "%(asctime)s [%(levelname)s] %(name)s: %(message)s")
     datefmt = config.get("LOG_DATE_FORMAT", None)
-    return logging.Formatter(fmt, datefmt)
+    return Formatter(fmt, datefmt)
 
 
 def get_json_formatter(config):
@@ -114,7 +140,7 @@ def get_json_formatter(config):
     ]
     include = config.get("LOG_FILE_INCLUDE", default_include)
     # Fields form the `extra` dict are automatically added by the JsonFormatter.
-    return jsonlogger.JsonFormatter(" ".join(f"%({prop})" for prop in include))
+    return JsonFormatter(" ".join(f"%({prop})" for prop in include))
 
 
 def get_default_handler(config, filters=None):

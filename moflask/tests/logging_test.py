@@ -46,6 +46,18 @@ def test_handlers_are_added_once():
     assert app.logger.handlers == handlers1
 
 
+def test_logging_to_milliseconds(caplog):
+    """Log with millisecond precision and TZ information."""
+    app = Flask(__name__)
+    logging.init_logger(app)
+    app.logger.info("Test")
+    assert (__name__, _logging.INFO, "Test") in caplog.record_tuples
+    # A dot is the separator between sec and msec, ISO8601 allows comma or dot
+    assert "." in caplog.records[0].asctime
+    # A plus is the separator between the datetime and it's TZ offset
+    assert "+" in caplog.records[0].asctime
+
+
 def test_adding_extra_filters():
     """Test extra filters are added to the handlers."""
 
