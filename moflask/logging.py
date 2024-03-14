@@ -108,10 +108,11 @@ def add_response_data(record):
     response = getattr(record, "_response", None)
     if response:
         record.response_status_code = response.status_code
+        record.response_body_text = response.text
         try:
-            record.response_body = response.json()
+            record.response_body_json = response.json()
         except json.decoder.JSONDecodeError:
-            record.response_body = response.text
+            pass
     return True
 
 

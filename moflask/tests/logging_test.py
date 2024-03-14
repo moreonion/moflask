@@ -3,6 +3,7 @@
 
 import logging as _logging
 
+import pytest
 import requests
 from flask import Flask
 from pythonjsonlogger.jsonlogger import JsonFormatter
@@ -123,8 +124,10 @@ def test_response_filter():
     logging.add_response_data(record)
     assert record.response_status_code
     assert record.response_status_code == 200
-    assert record.response_body
-    assert record.response_body == "Hello"
+    assert record.response_body_text
+    assert record.response_body_text == "Hello"
+    with pytest.raises(AttributeError):
+        assert record.response_body_json
 
 
 def test_response_filter_with_json():
@@ -137,6 +140,8 @@ def test_response_filter_with_json():
     logging.add_response_data(record)
     assert record.response_status_code
     assert record.response_status_code == 200
-    assert record.response_body
-    assert "test" in record.response_body
-    assert record.response_body["test"] == 1
+    assert record.response_body_text
+    assert record.response_body_text == '{"test": 1}'
+    assert record.response_body_json
+    assert "test" in record.response_body_json
+    assert record.response_body_json["test"] == 1
