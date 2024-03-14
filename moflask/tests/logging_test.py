@@ -1,4 +1,5 @@
 """Tests for logging."""
+
 # pylint: disable=no-member,protected-access
 
 import logging as _logging
