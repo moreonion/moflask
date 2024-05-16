@@ -27,7 +27,7 @@ dev = [
   "pytest",
   "pytest-cov",
   "requests-mock",
-  "sentry-sdk[flask]",
+  "sentry-sdk[flask]<1.20",
 ]
 jwt = [
   "flask-jwt-extended>=4.4.4,<5",
