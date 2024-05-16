@@ -34,7 +34,7 @@ exceptiongroup==1.2.1
     # via pytest
 filelock==3.14.0
     # via virtualenv
-flask==3.0.3
+flask==2.3.3
     # via
     #   flask-jwt-extended
     #   moflask (pyproject.toml)
