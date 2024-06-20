@@ -50,6 +50,7 @@ $(VENV)/.pip-installed-production: requirements.txt $(PIP_SYNC)
 
 $(VENV)/.pip-installed-development: requirements-dev.txt $(PIP_SYNC)
 	PYTHONNOUSERSITE=$(PYTHONNOUSERSITE) $(PIP_SYNC) $< && $(TOUCH) $@
+	$(VENV)/bin/pip install -e .
 
 .git/hooks/pre-commit: $(VENV)
 	$(VENV)/bin/pre-commit install

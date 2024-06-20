@@ -4,7 +4,7 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt pyproject.toml
 #
-astroid==3.2.1
+astroid==3.2.2
     # via pylint
 black==24.4.2
     # via moflask (pyproject.toml)
@@ -12,7 +12,7 @@ blinker==1.8.2
     # via
     #   flask
     #   sentry-sdk
-certifi==2024.2.2
+certifi==2024.6.2
     # via
     #   requests
     #   sentry-sdk
@@ -24,7 +24,7 @@ click==8.1.7
     # via
     #   black
     #   flask
-coverage[toml]==7.5.1
+coverage[toml]==7.5.3
     # via pytest-cov
 dill==0.3.8
     # via pylint
@@ -32,7 +32,7 @@ distlib==0.3.8
     # via virtualenv
 exceptiongroup==1.2.1
     # via pytest
-filelock==3.14.0
+filelock==3.15.3
     # via virtualenv
 flask==2.3.3
     # via
@@ -65,9 +65,9 @@ mccabe==0.7.0
     # via pylint
 mypy-extensions==1.0.0
     # via black
-nodeenv==1.8.0
+nodeenv==1.9.1
     # via pre-commit
-packaging==24.0
+packaging==24.1
     # via
     #   black
     #   pytest
@@ -86,9 +86,9 @@ pydocstyle==6.3.0
     # via moflask (pyproject.toml)
 pyjwt==2.8.0
     # via flask-jwt-extended
-pylint==3.2.0
+pylint==3.2.3
     # via moflask (pyproject.toml)
-pytest==8.2.0
+pytest==8.2.2
     # via
     #   moflask (pyproject.toml)
     #   pytest-cov
@@ -98,7 +98,7 @@ python-json-logger==2.0.7
     # via moflask (pyproject.toml)
 pyyaml==6.0.1
     # via pre-commit
-requests==2.31.0
+requests==2.32.3
     # via requests-mock
 requests-mock==1.12.1
     # via moflask (pyproject.toml)
@@ -114,12 +114,12 @@ tomli==2.0.1
     #   pytest
 tomlkit==0.12.5
     # via pylint
-typing-extensions==4.11.0
+typing-extensions==4.12.2
     # via
     #   astroid
     #   black
     #   pylint
-urllib3==2.2.1
+urllib3==2.2.2
     # via
     #   requests
     #   sentry-sdk
@@ -129,8 +129,5 @@ werkzeug==3.0.3
     # via
     #   flask
     #   flask-jwt-extended
-zipp==3.18.2
+zipp==3.19.2
     # via importlib-metadata
-
-# The following packages are considered to be unsafe in a requirements file:
-# setuptools
