@@ -4,7 +4,7 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt pyproject.toml
 #
-astroid==3.2.2
+astroid==3.2.4
     # via pylint
 black==24.4.2
     # via moflask (pyproject.toml)
@@ -12,7 +12,7 @@ blinker==1.8.2
     # via
     #   flask
     #   sentry-sdk
-certifi==2024.6.2
+certifi==2024.7.4
     # via
     #   requests
     #   sentry-sdk
@@ -24,15 +24,15 @@ click==8.1.7
     # via
     #   black
     #   flask
-coverage[toml]==7.5.3
+coverage[toml]==7.6.0
     # via pytest-cov
 dill==0.3.8
     # via pylint
 distlib==0.3.8
     # via virtualenv
-exceptiongroup==1.2.1
+exceptiongroup==1.2.2
     # via pytest
-filelock==3.15.3
+filelock==3.15.4
     # via virtualenv
 flask==2.3.3
     # via
@@ -41,11 +41,11 @@ flask==2.3.3
     #   sentry-sdk
 flask-jwt-extended==4.6.0
     # via moflask (pyproject.toml)
-identify==2.5.36
+identify==2.6.0
     # via pre-commit
 idna==3.7
     # via requests
-importlib-metadata==7.1.0
+importlib-metadata==8.2.0
     # via flask
 iniconfig==2.0.0
     # via pytest
@@ -80,15 +80,15 @@ platformdirs==4.2.2
     #   virtualenv
 pluggy==1.5.0
     # via pytest
-pre-commit==3.7.1
+pre-commit==3.8.0
     # via moflask (pyproject.toml)
 pydocstyle==6.3.0
     # via moflask (pyproject.toml)
 pyjwt==2.8.0
     # via flask-jwt-extended
-pylint==3.2.3
+pylint==3.2.6
     # via moflask (pyproject.toml)
-pytest==8.2.2
+pytest==8.3.2
     # via
     #   moflask (pyproject.toml)
     #   pytest-cov
@@ -112,7 +112,7 @@ tomli==2.0.1
     #   coverage
     #   pylint
     #   pytest
-tomlkit==0.12.5
+tomlkit==0.13.0
     # via pylint
 typing-extensions==4.12.2
     # via
@@ -123,7 +123,7 @@ urllib3==2.2.2
     # via
     #   requests
     #   sentry-sdk
-virtualenv==20.26.2
+virtualenv==20.26.3
     # via pre-commit
 werkzeug==3.0.3
     # via
