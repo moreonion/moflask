@@ -6,13 +6,13 @@
 #
 astroid==3.2.4
     # via pylint
-black==24.4.2
+black==24.8.0
     # via moflask (pyproject.toml)
 blinker==1.8.2
     # via
     #   flask
     #   sentry-sdk
-certifi==2024.7.4
+certifi==2024.8.30
     # via
     #   requests
     #   sentry-sdk
@@ -24,7 +24,7 @@ click==8.1.7
     # via
     #   black
     #   flask
-coverage[toml]==7.6.0
+coverage[toml]==7.6.1
     # via pytest-cov
 dill==0.3.8
     # via pylint
@@ -43,9 +43,9 @@ flask-jwt-extended==4.6.0
     # via moflask (pyproject.toml)
 identify==2.6.0
     # via pre-commit
-idna==3.7
+idna==3.8
     # via requests
-importlib-metadata==8.2.0
+importlib-metadata==8.4.0
     # via flask
 iniconfig==2.0.0
     # via pytest
@@ -84,9 +84,9 @@ pre-commit==3.8.0
     # via moflask (pyproject.toml)
 pydocstyle==6.3.0
     # via moflask (pyproject.toml)
-pyjwt==2.8.0
+pyjwt==2.9.0
     # via flask-jwt-extended
-pylint==3.2.6
+pylint==3.2.7
     # via moflask (pyproject.toml)
 pytest==8.3.2
     # via
@@ -96,7 +96,7 @@ pytest-cov==5.0.0
     # via moflask (pyproject.toml)
 python-json-logger==2.0.7
     # via moflask (pyproject.toml)
-pyyaml==6.0.1
+pyyaml==6.0.2
     # via pre-commit
 requests==2.32.3
     # via requests-mock
@@ -112,7 +112,7 @@ tomli==2.0.1
     #   coverage
     #   pylint
     #   pytest
-tomlkit==0.13.0
+tomlkit==0.13.2
     # via pylint
 typing-extensions==4.12.2
     # via
@@ -125,9 +125,9 @@ urllib3==2.2.2
     #   sentry-sdk
 virtualenv==20.26.3
     # via pre-commit
-werkzeug==3.0.3
+werkzeug==3.0.4
     # via
     #   flask
     #   flask-jwt-extended
-zipp==3.19.2
+zipp==3.20.1
     # via importlib-metadata
