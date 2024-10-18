@@ -129,5 +129,5 @@ werkzeug==3.0.4
     # via
     #   flask
     #   flask-jwt-extended
-zipp==2.20.2
+zipp==3.20.2
     # via importlib-metadata
