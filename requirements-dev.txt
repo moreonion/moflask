@@ -4,9 +4,9 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt pyproject.toml
 #
-astroid==3.2.4
+astroid==3.3.5
     # via pylint
-black==24.8.0
+black==24.10.0
     # via moflask (pyproject.toml)
 blinker==1.8.2
     # via
@@ -18,21 +18,21 @@ certifi==2024.8.30
     #   sentry-sdk
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 click==8.1.7
     # via
     #   black
     #   flask
-coverage[toml]==7.6.1
+coverage[toml]==7.6.3
     # via pytest-cov
-dill==0.3.8
+dill==0.3.9
     # via pylint
-distlib==0.3.8
+distlib==0.3.9
     # via virtualenv
 exceptiongroup==1.2.2
     # via pytest
-filelock==3.15.4
+filelock==3.16.1
     # via virtualenv
 flask==2.3.3
     # via
@@ -41,11 +41,11 @@ flask==2.3.3
     #   sentry-sdk
 flask-jwt-extended==4.6.0
     # via moflask (pyproject.toml)
-identify==2.6.0
+identify==2.6.1
     # via pre-commit
-idna==3.8
+idna==3.10
     # via requests
-importlib-metadata==8.4.0
+importlib-metadata==8.5.0
     # via flask
 iniconfig==2.0.0
     # via pytest
@@ -57,7 +57,7 @@ itsdangerous==2.2.0
     # via flask
 jinja2==3.1.4
     # via flask
-markupsafe==2.1.5
+markupsafe==3.0.1
     # via
     #   jinja2
     #   werkzeug
@@ -73,22 +73,22 @@ packaging==24.1
     #   pytest
 pathspec==0.12.1
     # via black
-platformdirs==4.2.2
+platformdirs==4.3.6
     # via
     #   black
     #   pylint
     #   virtualenv
 pluggy==1.5.0
     # via pytest
-pre-commit==3.8.0
+pre-commit==4.0.1
     # via moflask (pyproject.toml)
 pydocstyle==6.3.0
     # via moflask (pyproject.toml)
 pyjwt==2.9.0
     # via flask-jwt-extended
-pylint==3.2.7
+pylint==3.3.1
     # via moflask (pyproject.toml)
-pytest==8.3.2
+pytest==8.3.3
     # via
     #   moflask (pyproject.toml)
     #   pytest-cov
@@ -106,7 +106,7 @@ sentry-sdk[flask]==1.19.1
     # via moflask (pyproject.toml)
 snowballstemmer==2.2.0
     # via pydocstyle
-tomli==2.0.1
+tomli==2.0.2
     # via
     #   black
     #   coverage
@@ -119,15 +119,15 @@ typing-extensions==4.12.2
     #   astroid
     #   black
     #   pylint
-urllib3==2.2.2
+urllib3==2.2.3
     # via
     #   requests
     #   sentry-sdk
-virtualenv==20.26.3
+virtualenv==20.27.0
     # via pre-commit
 werkzeug==3.0.4
     # via
     #   flask
     #   flask-jwt-extended
-zipp==3.20.1
+zipp==2.20.2
     # via importlib-metadata
