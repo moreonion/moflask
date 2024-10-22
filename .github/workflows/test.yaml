@@ -17,6 +17,16 @@ jobs:
         # Run in all these versions of Python
         python-version: ["3.9", "3.11", "3.12"]
 
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
         # Checkout the latest code from the repo
       - name: Checkout repo
@@ -31,9 +41,18 @@ jobs:
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
         # Install the package.
+      - name: Install libraries for building psycopg2
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libpq-dev python-dev
+          version: 1.0
+      - name: Install psycopg2
+        run: pip install psycopg2
       - name: Install package
         run: pip install -r requirements-dev.txt; pip install -e .
       - name: Run tests
+        env:
+          DATABASE_URI: postgresql://postgres:postgres@localhost:${{ job.services.postgres.ports[5432] }}/postgres
         run: pytest
       - name: Run linters
         uses: pre-commit/action@v3.0.0

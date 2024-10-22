@@ -37,10 +37,15 @@ filelock==3.16.1
 flask==2.3.3
     # via
     #   flask-jwt-extended
+    #   flask-sqlalchemy
     #   moflask (pyproject.toml)
     #   sentry-sdk
 flask-jwt-extended==4.6.0
     # via moflask (pyproject.toml)
+flask-sqlalchemy==3.1.1
+    # via moflask (pyproject.toml)
+greenlet==3.1.1
+    # via sqlalchemy
 identify==2.6.1
     # via pre-commit
 idna==3.10
@@ -96,6 +101,8 @@ pytest-cov==5.0.0
     # via moflask (pyproject.toml)
 python-json-logger==2.0.7
     # via moflask (pyproject.toml)
+pytz==2024.2
+    # via moflask (pyproject.toml)
 pyyaml==6.0.2
     # via pre-commit
 requests==2.32.3
@@ -112,6 +119,8 @@ tomli==2.0.2
     #   coverage
     #   pylint
     #   pytest
+sqlalchemy==2.0.36
+    # via flask-sqlalchemy
 tomlkit==0.13.2
     # via pylint
 typing-extensions==4.12.2
@@ -119,6 +128,7 @@ typing-extensions==4.12.2
     #   astroid
     #   black
     #   pylint
+    #   sqlalchemy
 urllib3==2.2.3
     # via
     #   requests

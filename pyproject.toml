@@ -20,12 +20,14 @@ dependencies = [
 dev = [
   "black",
   "flask-jwt-extended",
+  "flask-sqlalchemy",
   "isort",
   "pre-commit",
   "pydocstyle",
   "pylint",
   "pytest",
   "pytest-cov",
+  "pytz",
   "requests-mock",
   "sentry-sdk[flask]<1.20",
 ]
