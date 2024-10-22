@@ -7,7 +7,21 @@ import sqlalchemy as sa
 
 
 class DateTimeUTC(sa.types.TypeDecorator):
-    """SQLAlchemy type for storing datetime objects in UTC."""
+    """SQLAlchemy type for storing datetime objects in UTC.
+
+    This is modeled after the official `SQLAlchemy documentation`_. It converts all datetime
+    objects into UTC and then stores them as naive datetimes.
+
+    I’ve also evaluated and discarded the following options:
+        * `sqlalchemy-utc`_: Stores timezone aware timestamps, no release in more than two years.
+        * PendulumDateTime from `sqlalchemy-utils`_: No dire need to use pendulum (yet), overly
+          complicated code, no maintainer response to `simplifications`_.
+
+    .. _SQLAlchemy documentation: https://docs.sqlalchemy.org/en/20/core/custom_types.html#store-timezone-aware-timestamps-as-timezone-naive-utc  # pylint: disable=line-too-long
+    .. _sqlalchemy-utc: https://github.com/spoqa/sqlalchemy-utc
+    .. _sqlalchemy-utils: https://github.com/kvesteri/sqlalchemy-utils
+    .. _simplifications: https://github.com/kvesteri/sqlalchemy-utils/pull/761
+    """
 
     # pylint: disable=too-many-ancestors
 
