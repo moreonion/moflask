@@ -87,8 +87,6 @@ pluggy==1.5.0
     # via pytest
 pre-commit==4.0.1
     # via moflask (pyproject.toml)
-pydocstyle==6.3.0
-    # via moflask (pyproject.toml)
 pyjwt==2.9.0
     # via flask-jwt-extended
 pylint==3.3.1
@@ -111,8 +109,6 @@ requests-mock==1.12.1
     # via moflask (pyproject.toml)
 sentry-sdk[flask]==1.19.1
     # via moflask (pyproject.toml)
-snowballstemmer==2.2.0
-    # via pydocstyle
 tomli==2.0.2
     # via
     #   black

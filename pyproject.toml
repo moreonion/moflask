@@ -23,7 +23,6 @@ dev = [
   "flask-sqlalchemy",
   "isort",
   "pre-commit",
-  "pydocstyle",
   "pylint",
   "pytest",
   "pytest-cov",

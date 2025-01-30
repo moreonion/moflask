@@ -26,8 +26,3 @@ repos:
         exclude: ^migrations/
         types:
         - python
-    -   id: pydocstyle
-        name: pydocstyle
-        entry: pydocstyle
-        language: python
-        files: \.py$
