@@ -97,6 +97,7 @@ class Session:
         """
         return {
             "identity": self.identity,
+            "sub": self.identity,
             "user_claims": {
                 "session_id": self.session_id,
                 "roles": {org: list(roles) for org, roles in self.roles.items()},

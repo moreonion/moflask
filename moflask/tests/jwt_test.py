@@ -41,6 +41,7 @@ class SessionTest:
         """Test creating a session from a token."""
         token = {
             "identity": "7fd8ecf2-c1fa-43fa-8661-3eafaec457b0",
+            "sub": "7fd8ecf2-c1fa-43fa-8661-3eafaec457b0",
             "user_claims": {
                 "roles": {"org1": ["admin"]},
                 "session_id": "24861915-4617-4dc9-ac0e-2326c7538abc",
