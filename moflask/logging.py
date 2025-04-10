@@ -24,7 +24,7 @@ import logging.handlers
 import os
 
 import flask
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import json as jsonlogger
 
 
 class ISOTimeFormatterMixin:  # pylint: disable=too-few-public-methods
