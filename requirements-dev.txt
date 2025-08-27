@@ -48,6 +48,8 @@ identify==2.6.12
     # via pre-commit
 idna==3.10
     # via requests
+impact-stack-proxyfix==0.1.0
+    # via moflask (pyproject.toml)
 iniconfig==2.1.0
     # via pytest
 isort==6.0.1
