@@ -4,7 +4,7 @@
 #
 #    pip-compile --cert=None --client-cert=None --extra=dev --index-url=None --output-file=requirements-dev.txt --pip-args=None pyproject.toml
 #
-astroid==4.0.1
+astroid==3.3.11
     # via pylint
 black==25.9.0
     # via moflask (pyproject.toml)
@@ -52,7 +52,7 @@ impact-stack-proxyfix==0.1.0
     # via moflask (pyproject.toml)
 iniconfig==2.3.0
     # via pytest
-isort==7.0.0
+isort==6.1.0
     # via
     #   moflask (pyproject.toml)
     #   pylint
@@ -93,7 +93,7 @@ pygments==2.19.2
     # via pytest
 pyjwt==2.10.1
     # via flask-jwt-extended
-pylint==4.0.2
+pylint==3.3.9
     # via moflask (pyproject.toml)
 pytest==8.4.2
     # via

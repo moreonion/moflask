@@ -24,7 +24,7 @@ dev = [
   "flask-sqlalchemy",
   "isort",
   "pre-commit",
-  "pylint",
+  "pylint<4",  # bug: https://github.com/pylint-dev/pylint/issues/10696
   "pytest",
   "pytest-cov",
   "pytz",
