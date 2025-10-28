@@ -29,10 +29,13 @@ dev = [
   "pytest-cov",
   "pytz",
   "requests-mock",
-  "sentry-sdk[flask]>=2",
+  "sentry-sdk[flask]",
 ]
 jwt = [
   "flask-jwt-extended>=4.4.4,<5",
+]
+sentry = [
+  "sentry-sdk[flask]>=2",
 ]
 
 [project.entry-points.pytest11]
