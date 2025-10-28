@@ -64,6 +64,11 @@ class BaseApp(Flask):
 
             defaults = {"integrations": [FlaskIntegration()]}
             self.sentry = sentry_sdk.init(**{**defaults, **config})
+            try:
+                sentry_sdk.set_tags(self.config.get("SENTRY_TAGS", {}))
+            except AttributeError:
+                # set_tags is not available for sentry-sdk < 2
+                pass
 
     @staticmethod
     def sanity_check():

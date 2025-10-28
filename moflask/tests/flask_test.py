@@ -6,8 +6,11 @@ from moflask import flask
 
 
 def test_app_with_sentry():
-    """Test initializing the app with a sentry-config."""
-    app = flask.BaseApp("moflask", config={"SENTRY_CONFIG": {"dsn": "https://user:pass@foo/1"}})
+    """Test initializing the app with a sentry-config and tags."""
+    app = flask.BaseApp(
+        "moflask",
+        config={"SENTRY_CONFIG": {"dsn": "https://user:pass@foo/1"}, "SENTRY_TAGS": {"foo": "bar"}},
+    )
     assert app.sentry
 
 
