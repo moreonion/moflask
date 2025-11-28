@@ -30,6 +30,9 @@ dev = [
   "requests-mock",
   "sentry-sdk[flask]",
 ]
+sentry = [
+  "sentry-sdk[flask]>=2",
+]
 
 [build-system]
 requires = [

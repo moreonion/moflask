@@ -64,6 +64,7 @@ class BaseApp(Flask):
 
             defaults = {"integrations": [FlaskIntegration()]}
             self.sentry = sentry_sdk.init(**{**defaults, **config})
+            sentry_sdk.set_tags(self.config.get("SENTRY_TAGS", {}))
 
     @staticmethod
     def sanity_check():
