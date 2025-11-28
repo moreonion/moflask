@@ -20,7 +20,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "black",
-  "flask-jwt-extended",
   "flask-sqlalchemy",
   "isort",
   "pre-commit",
@@ -31,15 +30,9 @@ dev = [
   "requests-mock",
   "sentry-sdk[flask]",
 ]
-jwt = [
-  "flask-jwt-extended>=4.4.4,<5",
-]
 sentry = [
   "sentry-sdk[flask]>=2",
 ]
-
-[project.entry-points.pytest11]
-moflask = "moflask.pytest_plugin"
 
 [build-system]
 requires = [
