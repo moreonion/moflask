@@ -6,7 +6,7 @@
 #
 astroid==3.3.11
     # via pylint
-black==25.11.0
+black==25.12.0
     # via moflask (pyproject.toml)
 blinker==1.9.0
     # via
@@ -24,13 +24,13 @@ click==8.3.1
     # via
     #   black
     #   flask
-coverage[toml]==7.12.0
+coverage[toml]==7.13.0
     # via pytest-cov
 dill==0.4.0
     # via pylint
 distlib==0.4.0
     # via virtualenv
-filelock==3.20.0
+filelock==3.20.1
     # via virtualenv
 flask==3.1.2
     # via
@@ -39,7 +39,7 @@ flask==3.1.2
     #   sentry-sdk
 flask-sqlalchemy==3.1.1
     # via moflask (pyproject.toml)
-greenlet==3.2.4
+greenlet==3.3.0
     # via sqlalchemy
 identify==2.6.15
     # via pre-commit
@@ -75,7 +75,7 @@ packaging==25.0
     #   pytest
 pathspec==0.12.1
     # via black
-platformdirs==4.5.0
+platformdirs==4.5.1
     # via
     #   black
     #   pylint
@@ -84,13 +84,13 @@ pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
-pre-commit==4.5.0
+pre-commit==4.5.1
     # via moflask (pyproject.toml)
 pygments==2.19.2
     # via pytest
 pylint==3.3.9
     # via moflask (pyproject.toml)
-pytest==9.0.1
+pytest==9.0.2
     # via
     #   moflask (pyproject.toml)
     #   pytest-cov
@@ -108,15 +108,15 @@ requests==2.32.5
     # via requests-mock
 requests-mock==1.12.1
     # via moflask (pyproject.toml)
-sentry-sdk[flask]==2.46.0
+sentry-sdk[flask]==2.48.0
     # via moflask (pyproject.toml)
-sqlalchemy==2.0.44
+sqlalchemy==2.0.45
     # via flask-sqlalchemy
 tomlkit==0.13.3
     # via pylint
 typing-extensions==4.15.0
     # via sqlalchemy
-urllib3==2.5.0
+urllib3==2.6.2
     # via
     #   requests
     #   sentry-sdk
