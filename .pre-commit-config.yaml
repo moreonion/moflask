@@ -20,6 +20,7 @@ repos:
         language: system
         files: \.py$
     -   id: pylint
+        require_serial: true
         name: pylint
         entry: pylint --jobs=2
         language: system
