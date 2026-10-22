@@ -42,6 +42,10 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.pip-tools.compile]
+generate-hashes = true
+reuse-hashes = true
+
 [tool.setuptools]
 packages = ["moflask"]
 
