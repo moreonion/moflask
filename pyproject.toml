@@ -29,6 +29,7 @@ dev = [
   "pytz",
   "requests-mock",
   "sentry-sdk[flask]",
+  "sqlalchemy<2.1",  # pending a decision on migrating to psycopg3
 ]
 sentry = [
   "sentry-sdk[flask]>=2",
